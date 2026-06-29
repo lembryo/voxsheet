@@ -1,32 +1,32 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { VoxSheet } from './VoxSheet';
-import type { FetchResult } from './types';
+import { describe, it, expect, vi } from "vitest"
+import { render, screen } from "@testing-library/react"
+import { VoxSheet } from "./VoxSheet"
+import type { FetchResult } from "./types"
 
-describe('VoxSheet', () => {
-  it('renders column headers', () => {
-    const fetchRows = vi.fn().mockResolvedValue({
-      data: [],
-      ids: [],
-      ordinals: [],
-    } satisfies FetchResult);
+const emptyResult: FetchResult = { data: [], ids: [], ordinals: [], total: 0 }
 
-    render(<VoxSheet columns={['A', 'B', 'C']} totalRows={0} fetchRows={fetchRows} />);
+describe("VoxSheet", () => {
+  it("renders column headers", () => {
+    const fetchRows = vi.fn().mockResolvedValue(emptyResult)
 
-    expect(screen.getByRole('columnheader', { name: 'A' })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'B' })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'C' })).toBeInTheDocument();
-  });
+    render(
+      <VoxSheet
+        columns={[{ name: "A" }, { name: "B" }, { name: "C" }]}
+        totalRows={0}
+        fetchRows={fetchRows}
+      />,
+    )
 
-  it('has correct aria-rowcount', () => {
-    const fetchRows = vi.fn().mockResolvedValue({
-      data: [],
-      ids: [],
-      ordinals: [],
-    } satisfies FetchResult);
+    expect(screen.getByRole("columnheader", { name: "A" })).toBeInTheDocument()
+    expect(screen.getByRole("columnheader", { name: "B" })).toBeInTheDocument()
+    expect(screen.getByRole("columnheader", { name: "C" })).toBeInTheDocument()
+  })
 
-    render(<VoxSheet columns={['A']} totalRows={1_000_000} fetchRows={fetchRows} />);
+  it("has correct aria-rowcount", () => {
+    const fetchRows = vi.fn().mockResolvedValue({ ...emptyResult, total: 1_000_000 } satisfies FetchResult)
 
-    expect(screen.getByRole('grid')).toHaveAttribute('aria-rowcount', '1000000');
-  });
-});
+    render(<VoxSheet columns={[{ name: "A" }]} totalRows={1_000_000} fetchRows={fetchRows} />)
+
+    expect(screen.getByRole("grid")).toHaveAttribute("aria-rowcount", "1000000")
+  })
+})
