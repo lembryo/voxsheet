@@ -98,7 +98,12 @@ export const useChunks = (params: Params) => {
             pendingRef.current.add(offset)
             const controller = new AbortController()
             controllersRef.current.add(controller)
-            const limit = Math.min(CHUNK, effectiveTotal - offset)
+            // 常に 1 チャンク分を要求する。総数が未確定（初回や stale）でも
+            // チャンク満杯を取りに行き、サーバ側が末尾でクランプして返す。
+            // ここで effectiveTotal でクランプすると、総数が小さく見える初回に
+            // limit が極端に小さくなり（例: 1）、そのチャンクが過小取得のまま
+            // キャッシュされて二度と取り直されない不具合になる。
+            const limit = CHUNK
             try {
                 const result = await fetchRows(
                     { offset, limit, sort, filters, search },

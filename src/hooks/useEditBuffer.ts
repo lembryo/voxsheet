@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import type { CellEdit, CellValue } from "../types"
 
 const MAX_UNDO = 200
@@ -120,16 +120,25 @@ export const useEditBuffer = ({ onCellChange, onDirtyChange }: Params) => {
         onDirtyChange?.(false)
     }, [onDirtyChange])
 
-    return {
-        version,
-        applyEdits,
-        undo,
-        redo,
-        getEditedValue,
-        isDirty,
-        getLocalEdits,
-        clear,
-        canUndo: () => undoRef.current.length > 0,
-        canRedo: () => redoRef.current.length > 0,
-    }
+    const canUndo = useCallback(() => undoRef.current.length > 0, [])
+    const canRedo = useCallback(() => redoRef.current.length > 0, [])
+
+    // 返り値の identity を安定させる。毎レンダーで新オブジェクトを返すと、これに依存する
+    // getRawValue や選択統計の effect が毎レンダー再実行され、無限ループ
+    //（Maximum update depth exceeded）の原因になる。
+    return useMemo(
+        () => ({
+            version,
+            applyEdits,
+            undo,
+            redo,
+            getEditedValue,
+            isDirty,
+            getLocalEdits,
+            clear,
+            canUndo,
+            canRedo,
+        }),
+        [version, applyEdits, undo, redo, getEditedValue, isDirty, getLocalEdits, clear, canUndo, canRedo],
+    )
 }

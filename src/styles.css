@@ -9,10 +9,11 @@
     --vox-color-fg: #1f2328;
     --vox-color-muted: #57606a;
     --vox-color-border: #d0d7de;
+    --vox-color-grid: #e6e8eb;
     --vox-color-header-bg: #f6f8fa;
     --vox-color-header-fg: #1f2328;
     --vox-color-row-stripe: #fbfcfd;
-    --vox-color-selection-bg: rgba(9, 105, 218, 0.12);
+    --vox-color-selection-bg: rgba(9, 105, 218, 0.1);
     --vox-color-selection-border: #0969da;
     --vox-color-active-border: #0969da;
     --vox-color-dirty-bg: rgba(212, 167, 44, 0.18);
@@ -55,6 +56,7 @@
         --vox-color-fg: #e6edf3;
         --vox-color-muted: #8b949e;
         --vox-color-border: #30363d;
+        --vox-color-grid: #21262d;
         --vox-color-header-bg: #161b22;
         --vox-color-header-fg: #e6edf3;
         --vox-color-row-stripe: #11161d;
@@ -71,6 +73,7 @@
     --vox-color-fg: #e6edf3;
     --vox-color-muted: #8b949e;
     --vox-color-border: #30363d;
+    --vox-color-grid: #21262d;
     --vox-color-header-bg: #161b22;
     --vox-color-header-fg: #e6edf3;
     --vox-color-row-stripe: #11161d;
@@ -240,20 +243,31 @@
     flex: 0 0 auto;
     height: 100%;
     padding: 0 var(--vox-cell-padding-x);
-    border-right: var(--vox-border-width) solid var(--vox-color-border);
-    border-bottom: var(--vox-border-width) solid var(--vox-color-border);
+    border-right: var(--vox-border-width) solid var(--vox-color-grid);
+    border-bottom: var(--vox-border-width) solid var(--vox-color-grid);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: cell;
+    user-select: none;
 }
 
 .vox-cell--selected {
     background: var(--vox-color-selection-bg);
 }
 
+/* アクティブセルは Excel 同様に白（塗りなし）。範囲の枠線はオーバーレイで描く。 */
 .vox-cell--active {
-    box-shadow: inset 0 0 0 2px var(--vox-color-active-border);
+    background: var(--vox-color-bg);
+}
+
+/* 選択範囲を 1 本の枠線で囲うオーバーレイ（レンジごとに 1 枚）。 */
+.vox-selection-outline {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    box-sizing: border-box;
+    border: 2px solid var(--vox-color-selection-border);
 }
 
 .vox-cell--dirty {
@@ -278,6 +292,7 @@
     background: var(--vox-color-bg);
     color: var(--vox-color-fg);
     font: inherit;
+    user-select: text;
 }
 
 .vox-fill-handle {

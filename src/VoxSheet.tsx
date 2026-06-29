@@ -100,6 +100,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
   const frozenRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewportHeight, setViewportHeight] = useState(600)
+  const [scrollbarWidth, setScrollbarWidth] = useState(0)
 
   // --- 列幅（列名キーで記憶し、リネーム後も引き継ぐ） ---
   const [colWidths, setColWidths] = useState<number[]>([])
@@ -125,6 +126,15 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     (i: number): number => colWidths[i] ?? columns[i]?.width ?? defaultColumnWidth,
     [colWidths, columns, defaultColumnWidth],
   )
+  // 行ヘッダ込みでの列 c の左端 px。選択枠オーバーレイの位置計算に使う。
+  const colLeft = useCallback(
+    (c: number): number => {
+      let x = ROW_HEADER_WIDTH
+      for (let i = 0; i < c; i++) x += getColWidth(i)
+      return x
+    },
+    [getColWidth],
+  )
   const applyColWidth = useCallback(
     (col: number, width: number) => {
       const w = Math.max(MIN_COL_WIDTH, Math.round(width))
@@ -140,14 +150,20 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     [columns, onColumnResize],
   )
 
-  // --- ビューポート高さの追従 ---
+  // --- ビューポート高さ＋縦スクロールバー幅の追従 ---
+  // 計測は mount 時と ResizeObserver（リサイズ時）のみに限定する。
+  // 毎レンダーで計測すると、高 DPI 環境で offsetWidth/clientWidth が 1px 揺れて
+  // setState → 再レンダー → 再計測… の無限ループ（Maximum update depth）になりうる。
+  // スクロールバー幅はヘッダ右端の padding に反映し、横スクロール時の列ズレを補正する。
   useEffect(() => {
     const el = bodyRef.current
     if (!el) return
-    setViewportHeight(el.clientHeight)
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setViewportHeight(entry.contentRect.height)
-    })
+    const measure = () => {
+      setViewportHeight(el.clientHeight)
+      setScrollbarWidth(el.offsetWidth - el.clientWidth)
+    }
+    measure()
+    const observer = new ResizeObserver(() => measure())
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
@@ -1049,7 +1065,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
       onKeyDown={handleKeyDown}
       onContextMenu={readOnly ? (e) => e.preventDefault() : undefined}
     >
-      <div className="vox-header-wrap">
+      <div className="vox-header-wrap" style={{ paddingRight: scrollbarWidth }}>
         <div className="vox-corner" style={{ width: ROW_HEADER_WIDTH }} onClick={handleSelectAll} />
         <div className="vox-header" ref={headerRef} role="row">
           {columns.map((col, c) => {
@@ -1136,6 +1152,18 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
       <div className="vox-body" ref={bodyRef} onScroll={handleScroll}>
         <div className="vox-scroll-spacer" style={{ height: totalHeight, width: headerWidth }}>
           {bodyRows}
+          {selRects.map((rect, i) => (
+            <div
+              key={`sel-${i}`}
+              className="vox-selection-outline"
+              style={{
+                left: colLeft(rect.c1),
+                top: (rect.r1 - bodyOffset) * rowHeight,
+                width: colLeft(rect.c2) + getColWidth(rect.c2) - colLeft(rect.c1),
+                height: (rect.r2 - rect.r1 + 1) * rowHeight,
+              }}
+            />
+          ))}
         </div>
       </div>
 
