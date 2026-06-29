@@ -28,39 +28,39 @@ import type { Column, FetchResult, Query, SortSpec } from "@lembryo/voxsheet"
 import "@lembryo/voxsheet/styles.css"
 
 const columns: Column[] = [
-  { name: "id", type: "number" },
-  { name: "name", type: "string" },
-  { name: "salary", type: "number", format: { kind: "number", options: { style: "currency", currency: "USD" } } },
-  { name: "joinedAt", type: "date" },
+    { name: "id", type: "number" },
+    { name: "name", type: "string" },
+    { name: "salary", type: "number", format: { kind: "number", options: { style: "currency", currency: "USD" } } },
+    { name: "joinedAt", type: "date" },
 ]
 
 export function App() {
-  const [sort, setSort] = useState<SortSpec[]>([])
-  const [total, setTotal] = useState(0)
+    const [sort, setSort] = useState<SortSpec[]>([])
+    const [total, setTotal] = useState(0)
 
-  // The grid calls this with a Query (offset/limit + the controlled sort/filters/search)
-  // and an AbortSignal it manages for stale-request cancellation.
-  const fetchRows = useCallback(async (query: Query, signal: AbortSignal): Promise<FetchResult> => {
-    const res = await fetch("/api/rows", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(query),
-      signal,
-    })
-    const json: FetchResult = await res.json()
-    if (typeof json.total === "number") setTotal(json.total)
-    return json
-  }, [])
+    // The grid calls this with a Query (offset/limit + the controlled sort/filters/search)
+    // and an AbortSignal it manages for stale-request cancellation.
+    const fetchRows = useCallback(async (query: Query, signal: AbortSignal): Promise<FetchResult> => {
+        const res = await fetch("/api/rows", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(query),
+            signal,
+        })
+        const json: FetchResult = await res.json()
+        if (typeof json.total === "number") setTotal(json.total)
+        return json
+    }, [])
 
-  return (
-    <VoxSheet
-      columns={columns}
-      totalRows={total}
-      fetchRows={fetchRows}
-      sort={sort}
-      onSortChange={setSort}
-    />
-  )
+    return (
+        <VoxSheet
+            columns={columns}
+            totalRows={total}
+            fetchRows={fetchRows}
+            sort={sort}
+            onSortChange={setSort}
+        />
+    )
 }
 ```
 
@@ -70,18 +70,18 @@ export function App() {
 type CellValue = string | number | boolean | null
 
 type Query = {
-  offset: number
-  limit: number
-  sort: SortSpec[]      // multi-column, in priority order
-  filters: FilterSpec[] // AND-combined
-  search?: string
+    offset: number
+    limit: number
+    sort: SortSpec[]      // multi-column, in priority order
+    filters: FilterSpec[] // AND-combined
+    search?: string
 }
 
 type FetchResult = {
-  data: CellValue[][]   // data[i][j] = row i, column j (aligned to `columns`)
-  ids: number[]         // stable row id (used to resolve edits on commit)
-  ordinals: number[]    // display ordinal shown in the row-number gutter
-  total?: number        // count after filters/search; syncs the scrollbar
+    data: CellValue[][]   // data[i][j] = row i, column j (aligned to `columns`)
+    ids: number[]         // stable row id (used to resolve edits on commit)
+    ordinals: number[]    // display ordinal shown in the row-number gutter
+    total?: number        // count after filters/search; syncs the scrollbar
 }
 
 type FetchRowsFn = (query: Query, signal: AbortSignal) => Promise<FetchResult>
@@ -92,29 +92,29 @@ and sort comparison:
 
 ```ts
 type Column = {
-  name: string                                   // identifier + display label
-  type?: "string" | "number" | "date" | "boolean"
-  align?: "left" | "right" | "center"            // defaults derived from type
-  width?: number
-  format?: ColumnFormat                          // Intl options or a function
-  editable?: boolean | ((ctx: { row: number }) => boolean)
-  validate?: (value: CellValue, ctx: { row: number }) => boolean | string
+    name: string                                   // identifier + display label
+    type?: "string" | "number" | "date" | "boolean"
+    align?: "left" | "right" | "center"            // defaults derived from type
+    width?: number
+    format?: ColumnFormat                          // Intl options or a function
+    editable?: boolean | ((ctx: { row: number }) => boolean)
+    validate?: (value: CellValue, ctx: { row: number }) => boolean | string
 }
 ```
 
 ## Key props
 
-| prop | type | notes |
-|------|------|-------|
-| `columns` | `Column[]` | required |
-| `totalRows` | `number` | required; kept in sync via `FetchResult.total` |
-| `fetchRows` | `FetchRowsFn` | required |
-| `sort` / `filters` / `search` | controlled | reflected in the header / passed to `fetchRows` |
-| `readOnly` | `boolean` | disables editing (copy / select / navigate still work) |
-| `density` | `"compact" \| "normal" \| "comfortable"` | sets row height + font size |
-| `rowHeight` | `number` | overrides density height |
-| `theme` | `"light" \| "dark" \| "system"` | sets `data-vox-theme` |
-| `labels` / `icons` / `platform` | partial overrides | i18n, icon set, clipboard/notify/confirm/saveFile |
+| prop                            | type                                     | notes                                                  |
+|---------------------------------|------------------------------------------|--------------------------------------------------------|
+| `columns`                       | `Column[]`                               | required                                               |
+| `totalRows`                     | `number`                                 | required; kept in sync via `FetchResult.total`         |
+| `fetchRows`                     | `FetchRowsFn`                            | required                                               |
+| `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`        |
+| `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work) |
+| `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                            |
+| `rowHeight`                     | `number`                                 | overrides density height                               |
+| `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                  |
+| `labels` / `icons` / `platform` | partial overrides                        | i18n, icon set, clipboard/notify/confirm/saveFile      |
 
 ### Callbacks (host events)
 
@@ -132,17 +132,17 @@ and header rename is enabled only when `onColumnRename` is set.
 
 ```ts
 type VoxSheetHandle = {
-  scrollToRow(row): void
-  scrollToCell(row, col): void
-  focusCell(row, col): void
-  getSelection(): Selection[]
-  setSelection(sel: Selection[]): void
-  startEdit(row, col): void
-  getLocalEdits(): CellEdit[]   // pull uncommitted edits to persist
-  clearLocalEdits(): void       // call after a successful commit
-  undo(): void
-  redo(): void
-  invalidate(): void            // drop cache + refetch
+    scrollToRow(row): void
+    scrollToCell(row, col): void
+    focusCell(row, col): void
+    getSelection(): Selection[]
+    setSelection(sel: Selection[]): void
+    startEdit(row, col): void
+    getLocalEdits(): CellEdit[]   // pull uncommitted edits to persist
+    clearLocalEdits(): void       // call after a successful commit
+    undo(): void
+    redo(): void
+    invalidate(): void            // drop cache + refetch
 }
 ```
 

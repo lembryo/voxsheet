@@ -139,6 +139,17 @@ export const useEditBuffer = ({ onCellChange, onDirtyChange }: Params) => {
             canUndo,
             canRedo,
         }),
-        [version, applyEdits, undo, redo, getEditedValue, isDirty, getLocalEdits, clear, canUndo, canRedo],
+        [
+            version,
+            applyEdits,
+            undo,
+            redo,
+            getEditedValue,
+            isDirty,
+            getLocalEdits,
+            clear,
+            canUndo,
+            canRedo,
+        ],
     )
 }
