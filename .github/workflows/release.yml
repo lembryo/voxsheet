@@ -1,0 +1,37 @@
+# Release — main マージ時に Changesets で version bump → npm publish する（テンプレート）。
+# 切り出し後の lembryo/voxsheet で有効化される。実際の公開設定（npm トークン / OIDC）は
+# リポジトリ側で行うこと。下記は雛形。
+name: Release
+
+on:
+    push:
+        branches: [ main ]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+    contents: write # Version Packages PR の作成・タグ push
+    pull-requests: write # Version Packages PR の作成
+    id-token: write # npm provenance / OIDC Trusted Publishing 用
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: actions/setup-node@v4
+                with:
+                    node-version-file: .nvmrc
+                    cache: npm
+                    registry-url: https://registry.npmjs.org
+            -   run: npm ci
+            # changeset が溜まっていれば「Version Packages」PR を作成/更新し、
+            # その PR がマージされたタイミングで publish (npm run release) を実行する。
+            -   uses: changesets/action@v1
+                with:
+                    publish: npm run release
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    # OIDC Trusted Publishing を使う場合 NODE_AUTH_TOKEN は不要。
+                    # 従来トークン方式なら下行を有効化し、リポジトリの Secrets に NPM_TOKEN を登録する。
+                    # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

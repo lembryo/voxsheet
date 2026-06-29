@@ -1,0 +1,73 @@
+.voxsheet-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  border: 1px solid #d0d7de;
+  background: #fff;
+}
+
+.voxsheet-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  background: #f6f8fa;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.voxsheet-header-cell {
+  padding: 6px 8px;
+  font-weight: 600;
+  border-right: 1px solid #d0d7de;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voxsheet-scroll {
+  position: relative;
+}
+
+.voxsheet-rows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.voxsheet-row {
+  display: flex;
+  border-bottom: 1px solid #eaeef2;
+}
+
+.voxsheet-cell {
+  padding: 4px 8px;
+  border-right: 1px solid #eaeef2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: dark) {
+  .voxsheet-container {
+    border-color: #30363d;
+    background: #0d1117;
+    color: #c9d1d9;
+  }
+  .voxsheet-header {
+    background: #161b22;
+    border-bottom-color: #30363d;
+  }
+  .voxsheet-header-cell {
+    border-right-color: #30363d;
+  }
+  .voxsheet-row {
+    border-bottom-color: #21262d;
+  }
+  .voxsheet-cell {
+    border-right-color: #21262d;
+  }
+}
