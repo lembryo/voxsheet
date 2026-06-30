@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@lembryo/voxsheet — Documentation</title>
+    <meta name="description" content="@lembryo/voxsheet reference. A virtual-scrolling spreadsheet component for React." />
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<header class="site-header">
+    <button class="menu-toggle" aria-label="Menu" id="menuToggle">☰</button>
+    <a class="brand" href="./">
+        <span class="logo">V</span>
+        <span>voxsheet</span>
+        <span class="ver">v1.0.0</span>
+    </a>
+    <span class="spacer"></span>
+    <div class="lang-switch">
+        <a href="../ja/" data-lang-link data-lang="ja">日本語</a>
+        <a href="./" class="active">EN</a>
+    </div>
+    <nav class="header-links">
+        <a href="../demo/">Demo</a>
+        <a href="https://www.npmjs.com/package/@lembryo/voxsheet" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/lembryo/voxsheet" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+</header>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <div class="nav-group">
+                <button class="group-title">Getting started<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#why">Why voxsheet</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#quickstart">Quick start</a></li>
+                    <li><a href="#concepts">Core concepts</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Data contract<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#data-flow">Data flow</a></li>
+                    <li><a href="#cellvalue">CellValue</a></li>
+                    <li><a href="#query">Query</a></li>
+                    <li><a href="#fetchresult">FetchResult</a></li>
+                    <li><a href="#fetchrows">fetchRows</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Columns<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#column">Column</a></li>
+                    <li><a href="#column-format">Formatting</a></li>
+                    <li><a href="#column-edit">Editing &amp; validation</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Props reference<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#props-data">Data</a></li>
+                    <li><a href="#props-layout">Layout &amp; display</a></li>
+                    <li><a href="#props-behavior">Behavior (controlled)</a></li>
+                    <li><a href="#props-state">State UI &amp; extension</a></li>
+                    <li><a href="#props-events">Events (callbacks)</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Feature guides<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#sorting">Sorting</a></li>
+                    <li><a href="#filtering">Filtering</a></li>
+                    <li><a href="#search">Search</a></li>
+                    <li><a href="#editing">Editing &amp; commit</a></li>
+                    <li><a href="#selection">Selection &amp; stats</a></li>
+                    <li><a href="#autofill">Autofill</a></li>
+                    <li><a href="#keyboard">Keyboard</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Customization<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#handle">Imperative handle (ref)</a></li>
+                    <li><a href="#styling">Styling &amp; theming</a></li>
+                    <li><a href="#i18n">i18n (labels)</a></li>
+                    <li><a href="#icons">Icons</a></li>
+                    <li><a href="#platform">Platform adapter</a></li>
+                </ul>
+            </div>
+            <div class="nav-group">
+                <button class="group-title">Reference<span class="chevron">▼</span></button>
+                <ul>
+                    <li><a href="#types">Type reference</a></li>
+                    <li><a href="#limitations">Limitations</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="content-inner">
+            <h1>@lembryo/voxsheet</h1>
+            <p class="lead">A React spreadsheet component that renders millions of rows smoothly with virtual scrolling. Excel-like selection, editing, autofill, clipboard, and column resizing, with host-controlled sort / filter / search.</p>
+
+            <p style="margin:0 0 28px">
+                <a href="../demo/" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
+                    ▶ Open live demo
+                </a>
+                <span style="color:var(--text-faint);font-size:13px;margin-left:12px">Runs in your browser with in-browser data</span>
+            </p>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p><code>VoxSheet</code> uses DOM-based virtual scrolling to render only the cells currently in view, no matter how many rows exist. Data fetching and domain state (sort / filter / search) are <strong>owned by the host</strong>; the viewport, selection, edit buffer, and keyboard are <strong>owned by the grid</strong>.</p>
+                <ul class="bullets">
+                    <li><strong>Transport-agnostic</strong> — fetching is delegated to <code>fetchRows</code>, so REST, GraphQL, or a local array all work.</li>
+                    <li><strong>TypeScript-first</strong> — the entire public API is typed.</li>
+                    <li><strong>Peer-dependency model</strong> — <code>react</code> / <code>react-dom</code> are peer dependencies.</li>
+                    <li><strong>No external CSS framework</strong> — self-contained via <code>--vox-*</code> variables and <code>vox-</code> classes.</li>
+                </ul>
+            </section>
+
+            <section id="why">
+                <h2>Why voxsheet?</h2>
+                <p>voxsheet's distinguishing trait is that it combines <strong>a free (MIT) Excel-like editing experience</strong> with <strong>a server-driven design</strong> from day one.</p>
+                <ul class="bullets">
+                    <li><strong>Free Excel-like editing</strong> — autofill (fill handle), multi-range selection, copy &amp; paste, and column resizing built in.</li>
+                    <li><strong>Server-driven by design</strong> — sort, filter, search, and pagination are delegated to your backend through <code>fetchRows</code>. Even huge datasets fetch only the visible window.</li>
+                    <li><strong>React-native / DOM-based</strong> — hooks, controlled props, JSX cells. Unlike canvas grids, you extend, inspect, and handle accessibility with ordinary DOM.</li>
+                    <li><strong>TypeScript-first, no external CSS, peer deps</strong> — easy to drop into an existing build and theme.</li>
+                </ul>
+                <h3>How it compares</h3>
+                <p>Several features voxsheet ships by default require a paid plan or a separate license in other major grids (the table below lists representative examples; licenses change, so verify current terms before adopting).</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Feature</th><th>voxsheet</th><th>Representative alternatives</th></tr></thead>
+                        <tbody>
+                            <tr><td>Autofill (fill handle)</td><td><strong>Built in, free</strong></td><td>AG Grid: Enterprise (paid); MUI X: Premium (paid)</td></tr>
+                            <tr><td>Multi-range selection</td><td><strong>Built in, free</strong></td><td>AG Grid: Enterprise (paid)</td></tr>
+                            <tr><td>Server-driven data (host owns fetching)</td><td><strong>Built in</strong></td><td>AG Grid: Enterprise (Server-Side Row Model)</td></tr>
+                            <tr><td>License</td><td><strong>MIT</strong></td><td>Handsontable: paid license required for commercial use</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note">
+                    <div class="note-title">Choosing the right tool</div>
+                    For <strong>breadth of features and maturity</strong> — row grouping, pivoting, frozen columns — established full-scale grids (e.g. AG Grid) lead. voxsheet fits <strong>“React, free, with Excel-like editing and a server-driven model done simply.”</strong> If you need to be fully framework-agnostic, Web Component grids (e.g. RevoGrid) are also worth considering.
+                </div>
+            </section>
+
+            <section id="installation">
+                <h2>Installation</h2>
+                <pre data-lang="bash"><code>npm install @lembryo/voxsheet</code></pre>
+                <p><code>react</code> / <code>react-dom</code> (v18+) are peer dependencies. Remember to import the stylesheet as well.</p>
+                <pre data-lang="ts"><code>import { VoxSheet } from "@lembryo/voxsheet"
+import "@lembryo/voxsheet/styles.css"</code></pre>
+            </section>
+
+            <section id="quickstart">
+                <h2>Quick start</h2>
+                <p>A minimal example. <code>columns</code>, <code>totalRows</code>, and <code>fetchRows</code> are the three required props.</p>
+                <pre data-lang="tsx"><code>import { useCallback, useState } from "react"
+import { VoxSheet } from "@lembryo/voxsheet"
+import type { Column, FetchResult, Query, SortSpec } from "@lembryo/voxsheet"
+import "@lembryo/voxsheet/styles.css"
+
+const columns: Column[] = [
+    { name: "id", type: "number" },
+    { name: "name", type: "string" },
+    {
+        name: "salary",
+        type: "number",
+        format: { kind: "number", options: { style: "currency", currency: "USD" } },
+    },
+    { name: "joinedAt", type: "date" },
+]
+
+export function App() {
+    const [sort, setSort] = useState&lt;SortSpec[]&gt;([])
+    const [total, setTotal] = useState(0)
+
+    // The grid calls this with a Query (offset/limit + the controlled
+    // sort/filters/search) and an AbortSignal for cancelling stale requests.
+    const fetchRows = useCallback(
+        async (query: Query, signal: AbortSignal): Promise&lt;FetchResult&gt; =&gt; {
+            const res = await fetch("/api/rows", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(query),
+                signal,
+            })
+            const json: FetchResult = await res.json()
+            if (typeof json.total === "number") setTotal(json.total)
+            return json
+        },
+        [],
+    )
+
+    return (
+        &lt;VoxSheet
+            columns={columns}
+            totalRows={total}
+            fetchRows={fetchRows}
+            sort={sort}
+            onSortChange={setSort}
+        /&gt;
+    )
+}</code></pre>
+                <div class="note">
+                    <div class="note-title">Note</div>
+                    Header buttons appear <strong>only when the matching callback is provided</strong>. For example, the sort button shows up only when <code>onSortChange</code> is set.
+                </div>
+            </section>
+
+            <section id="concepts">
+                <h2>Core concepts</h2>
+                <p><code>VoxSheet</code> is <strong>controlled and transport-agnostic</strong>. Responsibilities split as follows.</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Owner</th><th>Responsibilities</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">Host</span></td><td>Data source (<code>fetchRows</code>), domain state (<code>sort</code> / <code>filters</code> / <code>search</code>), persistence (committing edits), filter-condition UI</td></tr>
+                            <tr><td><span class="pname">Grid</span></td><td>Viewport (virtual scroll), cell selection, edit buffer, undo/redo, keyboard, clipboard</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>The host holds sort/filter <em>state</em> (e.g. with <code>useState</code>); the grid only <strong>notifies user actions via callbacks</strong>. When state changes, <code>fetchRows</code> is called again with a new <code>Query</code>.</p>
+            </section>
+
+            <section id="data-flow">
+                <h2>Data contract</h2>
+                <p>These are the types exchanged between the grid and the host — the heart of working with voxsheet.</p>
+            </section>
+
+            <section id="cellvalue">
+                <h3>CellValue</h3>
+                <p>A cell value, restricted to JSON-serializable types.</p>
+                <pre data-lang="ts"><code>type CellValue = string | number | boolean | null</code></pre>
+                <ul class="bullets">
+                    <li>Carry dates as an <strong>ISO 8601 string</strong> (recommended) or epoch milliseconds, interpreted via column <code>type: "date"</code>.</li>
+                    <li><code>null</code> represents SQL NULL and is distinct from the empty string <code>""</code>.</li>
+                </ul>
+            </section>
+
+            <section id="query">
+                <h3>Query</h3>
+                <p>The fetch criteria the grid passes to <code>fetchRows</code>. <code>offset</code> / <code>limit</code> are chosen by the grid; <code>sort</code> / <code>filters</code> / <code>search</code> are the controlled values you passed in.</p>
+                <pre data-lang="ts"><code>type Query = {
+    offset: number
+    limit: number
+    sort: SortSpec[]      // multi-column; array order = priority
+    filters: FilterSpec[] // AND-combined
+    search?: string
+}</code></pre>
+            </section>
+
+            <section id="fetchresult">
+                <h3>FetchResult</h3>
+                <p>The value returned by <code>fetchRows</code>. <code>data[i][j]</code> is row i, column j, aligned to <code>columns</code> order.</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">data</span><span class="req">required</span></td><td class="ptype">CellValue[][]</td><td><code>data[i][j]</code> = row i, col j. Aligned to <code>columns</code> order.</td></tr>
+                            <tr><td><span class="pname">ids</span><span class="req">required</span></td><td class="ptype">number[]</td><td>Stable per-row id. Used to resolve row → id when committing edits.</td></tr>
+                            <tr><td><span class="pname">ordinals</span><span class="req">required</span></td><td class="ptype">number[]</td><td>Display ordinal shown in the row-number gutter.</td></tr>
+                            <tr><td><span class="pname">total</span><span class="opt">optional</span></td><td class="ptype">number</td><td>Count after filters/search; syncs the scrollbar (returning it every time is recommended).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="fetchrows">
+                <h3>fetchRows</h3>
+                <p>A function that fetches a window of rows. The second argument, <code>signal</code>, lets you cancel stale requests.</p>
+                <pre data-lang="ts"><code>type FetchRowsFn = (query: Query, signal: AbortSignal) =&gt; Promise&lt;FetchResult&gt;</code></pre>
+                <div class="note warn">
+                    <div class="note-title">Important</div>
+                    Keep <code>fetchRows</code> a <strong>stable reference</strong> (e.g. with <code>useCallback</code>). Passing a new function every render triggers unnecessary refetches.
+                </div>
+            </section>
+
+            <section id="column">
+                <h2>Columns</h2>
+                <h3 style="margin-top:8px">Column</h3>
+                <p>Column metadata. <code>type</code> drives rendering, editing, comparison, and autofill. Show/hide a column by including or omitting it from the array (controlled).</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">name</span><span class="req">required</span></td><td class="ptype">string</td><td>Identifier and display label. Referenced by <code>column</code> in <code>sort</code> / <code>filter</code>.</td></tr>
+                            <tr><td><span class="pname">type</span><span class="opt">optional</span></td><td class="ptype">"string" | "number" | "date" | "boolean"</td><td>Default <code>"string"</code>. Basis for formatting, alignment, parsing, comparison.</td></tr>
+                            <tr><td><span class="pname">align</span><span class="opt">optional</span></td><td class="ptype">"left" | "right" | "center"</td><td>Derived from <code>type</code> by default (number/date = right, boolean = center).</td></tr>
+                            <tr><td><span class="pname">width</span><span class="opt">optional</span></td><td class="ptype">number</td><td>Defaults to <code>defaultColumnWidth</code>. User resizes are remembered by column name.</td></tr>
+                            <tr><td><span class="pname">format</span><span class="opt">optional</span></td><td class="ptype">ColumnFormat</td><td>Display formatting. See below.</td></tr>
+                            <tr><td><span class="pname">editable</span><span class="opt">optional</span></td><td class="ptype">boolean | ((ctx) =&gt; boolean)</td><td>Follows the parent <code>readOnly</code> by default.</td></tr>
+                            <tr><td><span class="pname">validate</span><span class="opt">optional</span></td><td class="ptype">(value, ctx) =&gt; boolean | string</td><td>Reject with <code>false</code> or a string (error message).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="column-format">
+                <h3>Formatting</h3>
+                <p>Stringify values with <code>Intl</code> options or an arbitrary function. Resolution order is <strong>function &gt; per-kind default</strong>.</p>
+                <pre data-lang="ts"><code>type ColumnFormat =
+    | { kind: "number"; options: Intl.NumberFormatOptions }
+    | { kind: "date"; options: Intl.DateTimeFormatOptions }
+    | ((value: CellValue, ctx: { column: Column; row: number }) =&gt; string)</code></pre>
+                <pre data-lang="ts"><code>// Currency
+{ name: "salary", type: "number",
+  format: { kind: "number", options: { style: "currency", currency: "USD" } } }
+
+// Fully custom via a function
+{ name: "status", format: (v) =&gt; (v === 1 ? "Active" : "Inactive") }</code></pre>
+            </section>
+
+            <section id="column-edit">
+                <h3>Editing &amp; validation</h3>
+                <p>Use <code>editable</code> for per-column / per-row edit permission, and <code>validate</code> for input validation.</p>
+                <pre data-lang="ts"><code>{
+    name: "email",
+    type: "string",
+    editable: ({ row }) =&gt; row &gt; 0,        // per-row permission
+    validate: (value) =&gt;
+        typeof value === "string" &amp;&amp; value.includes("@")
+            ? true
+            : "Invalid email address",       // returning a string rejects + shows the message
+}</code></pre>
+            </section>
+
+            <section id="props-data">
+                <h2>Props reference</h2>
+                <p><code>VoxSheetProps</code> grouped by category.</p>
+                <h3 style="margin-top:10px">Data</h3>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">columns</span><span class="req">required</span></td><td class="ptype">Column[]</td><td>Column definitions (controlled).</td></tr>
+                            <tr><td><span class="pname">totalRows</span><span class="req">required</span></td><td class="ptype">number</td><td>Total row count. Synced via <code>FetchResult.total</code>.</td></tr>
+                            <tr><td><span class="pname">fetchRows</span><span class="req">required</span></td><td class="ptype">FetchRowsFn</td><td>Row fetcher <code>(query, signal) =&gt; Promise&lt;FetchResult&gt;</code>.</td></tr>
+                            <tr><td><span class="pname">queryKey</span><span class="opt">optional</span></td><td class="ptype">unknown</td><td>Invalidation key for host-specific query inputs. Changing it drops the cache and refetches.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="props-layout">
+                <h3>Layout &amp; display</h3>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">rowHeight</span><span class="opt">optional</span></td><td class="ptype">number</td><td>Row height (px). Default 28. Takes precedence over <code>density</code>.</td></tr>
+                            <tr><td><span class="pname">density</span><span class="opt">optional</span></td><td class="ptype">"compact" | "normal" | "comfortable"</td><td>Switches font and row height together. Default <code>"normal"</code>.</td></tr>
+                            <tr><td><span class="pname">defaultColumnWidth</span><span class="opt">optional</span></td><td class="ptype">number</td><td>Default column width (px). Default 120.</td></tr>
+                            <tr><td><span class="pname">frozenRows</span><span class="opt">optional</span></td><td class="ptype">number</td><td>Rows frozen from the top. Default 0. <strong>Not rendered in this version</strong> (see Limitations).</td></tr>
+                            <tr><td><span class="pname">theme</span><span class="opt">optional</span></td><td class="ptype">"light" | "dark" | "system"</td><td>Sets <code>data-vox-theme</code>. Default <code>"system"</code>.</td></tr>
+                            <tr><td><span class="pname">className</span><span class="opt">optional</span></td><td class="ptype">string</td><td>Class on the root element.</td></tr>
+                            <tr><td><span class="pname">style</span><span class="opt">optional</span></td><td class="ptype">CSSProperties</td><td>Inline style on the root element.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="props-behavior">
+                <h3>Behavior (controlled domain state)</h3>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">readOnly</span><span class="opt">optional</span></td><td class="ptype">boolean</td><td>Disables editing UI (copy / select / navigate still work).</td></tr>
+                            <tr><td><span class="pname">sort</span><span class="opt">optional</span></td><td class="ptype">SortSpec[]</td><td>Multi-column sort (controlled).</td></tr>
+                            <tr><td><span class="pname">filters</span><span class="opt">optional</span></td><td class="ptype">FilterSpec[]</td><td>Filters (controlled; the condition UI is owned by the host).</td></tr>
+                            <tr><td><span class="pname">search</span><span class="opt">optional</span></td><td class="ptype">string</td><td>Search keyword.</td></tr>
+                            <tr><td><span class="pname">searchHighlights</span><span class="opt">optional</span></td><td class="ptype">CellAddress[]</td><td>Cells to highlight.</td></tr>
+                            <tr><td><span class="pname">currentSearchHit</span><span class="opt">optional</span></td><td class="ptype">CellAddress | null</td><td>Current hit; scrolls into view when it changes.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="props-state">
+                <h3>State UI &amp; extension</h3>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">renderLoading</span><span class="opt">optional</span></td><td class="ptype">() =&gt; ReactNode</td><td>Override the loading view.</td></tr>
+                            <tr><td><span class="pname">renderEmpty</span><span class="opt">optional</span></td><td class="ptype">() =&gt; ReactNode</td><td>Override the empty view.</td></tr>
+                            <tr><td><span class="pname">labels</span><span class="opt">optional</span></td><td class="ptype">Partial&lt;VoxLabels&gt;</td><td>Override built-in UI strings (i18n).</td></tr>
+                            <tr><td><span class="pname">icons</span><span class="opt">optional</span></td><td class="ptype">Icons</td><td>Override icons.</td></tr>
+                            <tr><td><span class="pname">platform</span><span class="opt">optional</span></td><td class="ptype">PlatformAdapter</td><td>Inject clipboard / notify / confirm / save implementations.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="props-events">
+                <h3>Events (callbacks)</h3>
+                <p>Buttons and affordances are <strong>hidden or disabled when their callback is omitted</strong>.</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">onSortChange</span></td><td class="ptype">(sort: SortSpec[]) =&gt; void</td><td>Grid toggles none→asc→desc and notifies. Omitting hides the sort button.</td></tr>
+                            <tr><td><span class="pname">onFilterButtonClick</span></td><td class="ptype">(col: number, anchor: DOMRect) =&gt; void</td><td>Filter request (host shows a popover). Omitting hides the filter button.</td></tr>
+                            <tr><td><span class="pname">onColumnResize</span></td><td class="ptype">(col: number, width: number) =&gt; void</td><td>Column resize (drag / double-click auto-fit).</td></tr>
+                            <tr><td><span class="pname">onColumnRename</span></td><td class="ptype">(col: number, newName: string) =&gt; void</td><td>Header rename. Omitting disables rename.</td></tr>
+                            <tr><td><span class="pname">onAddColumn</span></td><td class="ptype">(atCol: number) =&gt; void</td><td>Add-column request. Omitting hides the add button.</td></tr>
+                            <tr><td><span class="pname">onCellChange</span></td><td class="ptype">(edit: CellEdit) =&gt; void</td><td>On each local edit.</td></tr>
+                            <tr><td><span class="pname">onDirtyChange</span></td><td class="ptype">(hasChanges: boolean) =&gt; void</td><td>Whether there are uncommitted changes.</td></tr>
+                            <tr><td><span class="pname">onAppendRow</span></td><td class="ptype">(atRow: number) =&gt; void</td><td>Append a row (Enter on the last row / at the end).</td></tr>
+                            <tr><td><span class="pname">onInsertRow</span></td><td class="ptype">(atRow: number, pos: "above" | "below") =&gt; void</td><td>Insert-row request.</td></tr>
+                            <tr><td><span class="pname">onDeleteRows</span></td><td class="ptype">(rows: number[]) =&gt; void</td><td>Delete-rows request.</td></tr>
+                            <tr><td><span class="pname">onAutoFill</span></td><td class="ptype">(p: { sourceRange; direction; toEnd }) =&gt; void</td><td>Fill-handle drag / double-click.</td></tr>
+                            <tr><td><span class="pname">onSelectionChange</span></td><td class="ptype">(selection: Selection[]) =&gt; void</td><td>Selection changed.</td></tr>
+                            <tr><td><span class="pname">onSelectionStats</span></td><td class="ptype">(stats: SelectionStats | null) =&gt; void</td><td>Selection aggregates (sum / average / count).</td></tr>
+                            <tr><td><span class="pname">onCellKeyDown</span></td><td class="ptype">(e, ctx: CellContext) =&gt; void</td><td>Hook before default key handling (suppress with <code>preventDefault</code>).</td></tr>
+                            <tr><td><span class="pname">onError</span></td><td class="ptype">(err, ctx: { phase: "fetch" | "commit" }) =&gt; void</td><td>Fetch / commit failure.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="sorting">
+                <h2>Sorting</h2>
+                <p>Sorting is controlled. On header click the grid toggles <code>none → asc → desc</code> and notifies via <code>onSortChange</code>; the host updates <code>sort</code>. Array order is the multi-column priority.</p>
+                <pre data-lang="tsx"><code>const [sort, setSort] = useState&lt;SortSpec[]&gt;([])
+
+&lt;VoxSheet columns={columns} totalRows={total} fetchRows={fetchRows}
+    sort={sort} onSortChange={setSort} /&gt;</code></pre>
+            </section>
+
+            <section id="filtering">
+                <h2>Filtering</h2>
+                <p>The filter-condition UI is <strong>owned by the host</strong>. The grid signals “I want to edit this column's filter” via <code>onFilterButtonClick(col, anchorRect)</code>, so the host shows a popover near <code>anchorRect</code> and updates <code>filters</code> on confirm. Filters are AND-combined.</p>
+                <pre data-lang="ts"><code>type FilterOperator =
+    | "=" | "!=" | "&gt;" | "&gt;=" | "&lt;" | "&lt;="
+    | "contains" | "startsWith" | "endsWith"
+    | "isNull" | "notNull"
+
+type FilterSpec = { column: string; operator: FilterOperator; value?: CellValue }</code></pre>
+            </section>
+
+            <section id="search">
+                <h2>Search</h2>
+                <p>Passing a keyword to <code>search</code> reflects it into <code>Query.search</code> for <code>fetchRows</code>. The host controls hit highlighting and scrolling via <code>searchHighlights</code> / <code>currentSearchHit</code>.</p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet ...
+    search={keyword}
+    searchHighlights={hits}
+    currentSearchHit={hits[cursor] ?? null}
+/&gt;</code></pre>
+            </section>
+
+            <section id="editing">
+                <h2>Editing &amp; commit</h2>
+                <p>Edits first accumulate in a <strong>local layer</strong> (dirty highlight, <code>onCellChange</code> / <code>onDirtyChange</code> notifications). The host reads <code>getLocalEdits()</code> whenever it likes, resolves each <code>row</code> to a stable id via the <code>ids</code> received from <code>fetchRows</code>, persists, then calls <code>clearLocalEdits()</code>.</p>
+                <pre data-lang="tsx"><code>const ref = useRef&lt;VoxSheetHandle&gt;(null)
+
+async function save() {
+    const edits = ref.current!.getLocalEdits()  // CellEdit[]
+    // resolve row → stable id and persist (e.g. via PATCH)
+    await commitToServer(edits)
+    ref.current!.clearLocalEdits()               // clear after success
+}
+
+&lt;VoxSheet ref={ref} ... onDirtyChange={setDirty} /&gt;</code></pre>
+                <pre data-lang="ts"><code>type CellEdit = { row: number; col: number; oldValue: CellValue; newValue: CellValue }</code></pre>
+            </section>
+
+            <section id="selection">
+                <h2>Selection &amp; stats</h2>
+                <p>Selection is an array of Excel-like rectangular ranges. <code>onSelectionChange</code> reports the ranges; <code>onSelectionStats</code> reports count, numeric count, sum, and average (<code>sum</code> / <code>average</code> are <code>null</code> when there are no numbers).</p>
+                <pre data-lang="ts"><code>type CellAddress = { row: number; col: number }
+type Selection = { start: CellAddress; end: CellAddress }
+type SelectionStats = {
+    count: number
+    numericCount: number
+    sum: number | null
+    average: number | null
+}</code></pre>
+            </section>
+
+            <section id="autofill">
+                <h2>Autofill</h2>
+                <p>Dragging or double-clicking the fill handle at the bottom-right of the selection calls <code>onAutoFill</code>. The actual value-generation logic is up to the host.</p>
+                <pre data-lang="ts"><code>onAutoFill={(p) =&gt; {
+    // p.sourceRange: the source selection, p.direction: "down"|"up"|"left"|"right"
+    // p.toEnd: double-click to fill to the end of the column
+}}</code></pre>
+            </section>
+
+            <section id="keyboard">
+                <h2>Keyboard</h2>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Keys</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> / <kbd>Tab</kbd> / <kbd>Enter</kbd></td><td>Move between cells</td></tr>
+                            <tr><td><kbd>Home</kbd> <kbd>End</kbd> / <kbd>PageUp</kbd> <kbd>PageDown</kbd></td><td>Row start/end / page-wise move</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>Home</kbd> / <kbd>Ctrl</kbd>+<kbd>End</kbd></td><td>Jump to start/end of the table</td></tr>
+                            <tr><td><kbd>F2</kbd> / type directly / <kbd>Delete</kbd></td><td>Start editing / overwrite / clear</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd>/<kbd>C</kbd>/<kbd>X</kbd>/<kbd>V</kbd></td><td>Select all / copy / cut / paste</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Undo / redo</td></tr>
+                            <tr><td><kbd>Shift</kbd>+arrows / <kbd>Shift</kbd>+click</td><td>Extend the selection</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+click</td><td>Multi-range selection</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>IME is committed on <code>compositionend</code>. In <code>readOnly</code> mode only copy, select-all, and navigation are active.</p>
+            </section>
+
+            <section id="handle">
+                <h2>Imperative handle (ref)</h2>
+                <p>Get a <code>VoxSheetHandle</code> via <code>ref</code> to drive scrolling, selection, editing, undo, and more imperatively.</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Method</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="pname">scrollToRow(row)</span></td><td>Scroll to the given row.</td></tr>
+                            <tr><td><span class="pname">scrollToCell(row, col)</span></td><td>Scroll to the given cell.</td></tr>
+                            <tr><td><span class="pname">focusCell(row, col)</span></td><td>Focus the given cell.</td></tr>
+                            <tr><td><span class="pname">getSelection()</span></td><td>Get the current selection (<code>Selection[]</code>).</td></tr>
+                            <tr><td><span class="pname">setSelection(sel)</span></td><td>Set the selection.</td></tr>
+                            <tr><td><span class="pname">startEdit(row, col)</span></td><td>Begin editing the given cell.</td></tr>
+                            <tr><td><span class="pname">getLocalEdits()</span></td><td>Pull uncommitted edits (<code>CellEdit[]</code>).</td></tr>
+                            <tr><td><span class="pname">clearLocalEdits()</span></td><td>Clear local edits and undo/redo after a commit.</td></tr>
+                            <tr><td><span class="pname">undo()</span> / <span class="pname">redo()</span></td><td>Undo / redo.</td></tr>
+                            <tr><td><span class="pname">invalidate()</span></td><td>Drop the cache and refetch (explicit refresh).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="styling">
+                <h2>Styling &amp; theming</h2>
+                <p>Styles are self-contained via <code>vox-</code> classes and <code>--vox-*</code> CSS variables. Import <code>@lembryo/voxsheet/styles.css</code> and override variables or class rules to theme. Dark mode follows <code>prefers-color-scheme</code> and can be forced via the <code>theme</code> prop.</p>
+                <pre data-lang="css"><code>:root {
+    --vox-row-height: 32px;
+    --vox-color-accent: #06c755;
+}</code></pre>
+                <ul class="bullets">
+                    <li><code>density</code> switches row height and font together (<code>compact</code> / <code>normal</code> / <code>comfortable</code>).</li>
+                    <li><code>rowHeight</code> takes precedence over <code>density</code>.</li>
+                    <li><code>theme</code> sets the <code>data-vox-theme</code> attribute (<code>light</code> / <code>dark</code> / <code>system</code>).</li>
+                </ul>
+            </section>
+
+            <section id="i18n">
+                <h2>i18n (labels)</h2>
+                <p>Built-in UI strings can be partially overridden via <code>labels</code> (<code>Partial&lt;VoxLabels&gt;</code>).</p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet ...
+    labels={{
+        loading: "Loading…",
+        empty: "No data",
+        contextCopy: "Copy",
+        contextPaste: "Paste",
+    }}
+/&gt;</code></pre>
+                <p>See <code>VoxLabels</code> in the <a href="#types">type reference</a> for the full list of keys.</p>
+            </section>
+
+            <section id="icons">
+                <h2>Icons</h2>
+                <p>Replace the sort / filter icons. Keys you don't provide use the built-in icons.</p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet ...
+    icons={{
+        filter: ({ size }) =&gt; &lt;MyFilterIcon width={size} /&gt;,
+    }}
+/&gt;</code></pre>
+                <p>Replaceable keys: <code>sortAscending</code> / <code>sortDescending</code> / <code>sortUnsorted</code> / <code>filter</code> / <code>filterActive</code>.</p>
+            </section>
+
+            <section id="platform">
+                <h2>Platform adapter</h2>
+                <p>Inject implementations for clipboard, toast notifications, confirmation dialogs, and file saving. When omitted, the grid falls back to standard browser behavior.</p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet ...
+    platform={{
+        notify: (kind, message) =&gt; { showToast(kind, message); return id },
+        confirm: async ({ message }) =&gt; window.confirm(message),
+        clipboard: {
+            readText: () =&gt; navigator.clipboard.readText(),
+            writeText: (t) =&gt; navigator.clipboard.writeText(t),
+        },
+    }}
+/&gt;</code></pre>
+            </section>
+
+            <section id="types">
+                <h2>Type reference</h2>
+                <p>The main public types.</p>
+                <pre data-lang="ts"><code>type CellValue = string | number | boolean | null
+type ColumnType = "string" | "number" | "date" | "boolean"
+type ColumnAlign = "left" | "right" | "center"
+
+type SortDirection = "asc" | "desc"
+type SortSpec = { column: string; direction: SortDirection }
+
+type FilterOperator =
+    | "=" | "!=" | "&gt;" | "&gt;=" | "&lt;" | "&lt;="
+    | "contains" | "startsWith" | "endsWith"
+    | "isNull" | "notNull"
+type FilterSpec = { column: string; operator: FilterOperator; value?: CellValue }
+
+type CellAddress = { row: number; col: number }
+type Selection = { start: CellAddress; end: CellAddress }
+type SelectionStats = {
+    count: number; numericCount: number
+    sum: number | null; average: number | null
+}
+
+type CellEdit = { row: number; col: number; oldValue: CellValue; newValue: CellValue }
+type CellContext = { row: number; col: number; value: CellValue; column: Column }
+
+// Built-in UI strings
+type VoxLabels = {
+    loading: string; empty: string
+    contextCut: string; contextCopy: string; contextPaste: string
+    contextInsertRowAbove: string; contextInsertRowBelow: string
+    contextDeleteRows: string; contextUndo: string; contextRedo: string
+    confirmLargeCopyTitle: string; confirmLargeCopyMessage: string
+    confirmOk: string; confirmCancel: string
+}
+
+// Icons
+type IconName =
+    "sortAscending" | "sortDescending" | "sortUnsorted" | "filter" | "filterActive"
+type IconProps = { size?: number; className?: string }
+type Icons = Partial&lt;Record&lt;IconName, (props: IconProps) =&gt; ReactElement&gt;&gt;
+
+// Platform
+type ToastKind = "loading" | "success" | "error" | "info"
+type PlatformAdapter = {
+    clipboard?: {
+        readText?: () =&gt; Promise&lt;string&gt;
+        writeText?: (text: string) =&gt; Promise&lt;void&gt;
+    }
+    notify?: (kind: ToastKind, message: string,
+        opts?: { id?: string; durationMs?: number }) =&gt; string
+    confirm?: (opts: { title?: string; message: string;
+        confirmLabel?: string; cancelLabel?: string }) =&gt; Promise&lt;boolean&gt;
+    saveFile?: (opts: { suggestedName: string; mimeType?: string;
+        data: string | Blob }) =&gt; Promise&lt;void&gt;
+}</code></pre>
+            </section>
+
+            <section id="limitations">
+                <h2>Limitations</h2>
+                <div class="note warn">
+                    <div class="note-title">Not implemented in this version (v1.0.0)</div>
+                    <ul class="bullets" style="margin-bottom:0">
+                        <li><code>frozenRows</code> — the prop is accepted, but frozen rows are not yet rendered.</li>
+                        <li><code>frozenColumns</code> — planned for v2.</li>
+                    </ul>
+                </div>
+                <p>Header buttons whose callback is omitted are hidden (by design).</p>
+            </section>
+
+            <p style="margin-top:48px;color:var(--text-faint);font-size:13px;border-top:1px solid var(--border);padding-top:20px">
+                @lembryo/voxsheet · MIT License ·
+                <a href="https://www.npmjs.com/package/@lembryo/voxsheet" target="_blank" rel="noopener">npm</a> ·
+                <a href="https://github.com/lembryo/voxsheet" target="_blank" rel="noopener">GitHub</a>
+            </p>
+        </div>
+    </main>
+
+    <nav class="toc" id="toc">
+        <div class="toc-title">On this page</div>
+        <ul id="tocList"></ul>
+    </nav>
+</div>
+
+<script src="../script.js"></script>
+</body>
+</html>

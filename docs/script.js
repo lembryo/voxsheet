@@ -2,6 +2,30 @@
 ;(function () {
     "use strict"
 
+    // ---------- 言語スイッチャ（/ja ↔ /en） ----------
+    // 現在ページの言語を記憶（ルートの振り分けやデモが参照する）。
+    try {
+        var curLang = document.documentElement.getAttribute("data-lang")
+        if (curLang) localStorage.setItem("voxsheet-lang", curLang)
+    } catch (e) {}
+    // 言語切替リンクは現在のセクション(#hash)を引き継ぎ、選択を記憶する。
+    var langLinks = document.querySelectorAll("[data-lang-link]")
+    langLinks.forEach(function (a) {
+        a.setAttribute("data-href", a.getAttribute("href").split("#")[0])
+        a.addEventListener("click", function () {
+            try {
+                localStorage.setItem("voxsheet-lang", a.getAttribute("data-lang"))
+            } catch (e) {}
+        })
+    })
+    function syncLangLinks() {
+        langLinks.forEach(function (a) {
+            a.setAttribute("href", a.getAttribute("data-href") + location.hash)
+        })
+    }
+    syncLangLinks()
+    window.addEventListener("hashchange", syncLangLinks)
+
     // ---------- モバイルメニュー ----------
     var sidebar = document.getElementById("sidebar")
     var backdrop = document.getElementById("backdrop")
