@@ -13,12 +13,12 @@ jobs:
         # 正規リポジトリ以外（fork 等）では実行しない。
         if: github.repository == 'lembryo/voxsheet'
         steps:
-            -   uses: actions/checkout@v4
-            -   uses: actions/setup-node@v4
+            -   uses: actions/checkout@v5
+            -   uses: actions/setup-node@v5
                 with:
                     node-version-file: .nvmrc
             -   run: npm install
-            -   run: npm run lint
+            # lint は monorepo 側で実施（eslint ツールチェインは monorepo root に集約）。
             -   run: npm run typecheck
             -   run: npm test
             -   run: npm run build
