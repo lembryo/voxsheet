@@ -1,6 +1,6 @@
 {
     "name": "@lembryo/voxsheet",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Voxel-style virtual spreadsheet renderer for the web",
     "license": "MIT",
     "author": "mao <mao.lembryo@gmail.com>",
