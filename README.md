@@ -7,6 +7,37 @@ selection, editing, autofill, clipboard, column resize, and host-controlled
 sort / filter / search. React component, peer-dependency model, TypeScript-first,
 no external CSS framework.
 
+**[📖 Documentation](https://lembryo.github.io/voxsheet/) · [▶ Live demo](https://lembryo.github.io/voxsheet/demo/) · [npm](https://www.npmjs.com/package/@lembryo/voxsheet)**
+
+## Why voxsheet?
+
+voxsheet combines a **free (MIT) Excel-like editing experience** with a
+**server-driven design** from day one.
+
+- **Free Excel-like editing** — autofill (fill handle), multi-range selection,
+  copy & paste, and column resizing built in.
+- **Server-driven by design** — sort, filter, search, and pagination are
+  delegated to your backend through `fetchRows`; even huge datasets fetch only
+  the visible window.
+- **React-native / DOM-based** — hooks, controlled props, JSX cells; extend and
+  inspect with ordinary DOM (no canvas).
+- **TypeScript-first, no external CSS, peer dependencies.**
+
+Several of these features are paid or separately licensed in other major grids:
+
+| Feature | voxsheet | Representative alternatives |
+| --- | --- | --- |
+| Autofill (fill handle) | **Built in, free** | AG Grid: Enterprise (paid); MUI X: Premium (paid) |
+| Multi-range selection | **Built in, free** | AG Grid: Enterprise (paid) |
+| Server-driven data | **Built in** | AG Grid: Enterprise (Server-Side Row Model) |
+| License | **MIT** | Handsontable: paid license for commercial use |
+
+> For breadth (row grouping, pivoting, frozen columns) and maturity, established
+> grids such as AG Grid lead. voxsheet fits "React, free, Excel-like editing with
+> a server-driven model done simply." If you need to be fully framework-agnostic,
+> consider Web Component grids such as RevoGrid. Licenses change — verify current
+> terms before adopting.
+
 ## Installation
 
 ```bash

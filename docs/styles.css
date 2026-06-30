@@ -133,6 +133,32 @@ a:hover {
     text-decoration: none;
 }
 
+.lang-switch {
+    display: inline-flex;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lang-switch a {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    background: var(--bg);
+}
+
+.lang-switch a:hover {
+    color: var(--text);
+    text-decoration: none;
+    background: var(--bg-soft);
+}
+
+.lang-switch a.active {
+    background: var(--accent);
+    color: #fff;
+}
+
 .menu-toggle {
     display: none;
     border: 1px solid var(--border-strong);
