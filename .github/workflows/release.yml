@@ -1,21 +1,21 @@
-# Release — main マージ時に Changesets で version bump → npm publish する（テンプレート）。
-# 切り出し後の lembryo/voxsheet で有効化される。実際の公開設定（npm トークン / OIDC）は
-# リポジトリ側で行うこと。下記は雛形。
+# Release — GitHub Release を publish したとき（または手動実行）に npm へ公開する。
+# 認証はアクセストークン方式: リポジトリ Secrets に NPM_TOKEN を登録しておくこと
+#   （Granular Access Token / Read and write / Bypass 2FA を有効化）。
 name: Release
 
 on:
-    push:
-        branches: [ main ]
+    release:
+        types: [ published ]
+    workflow_dispatch:
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-
+# provenance（公開元の証跡）を付けるため id-token を許可。
+# 不要なら id-token 行と publish の --provenance を外してよい。
 permissions:
-    contents: write # Version Packages PR の作成・タグ push
-    pull-requests: write # Version Packages PR の作成
-    id-token: write # npm provenance / OIDC Trusted Publishing 用
+    contents: read
+    id-token: write
 
 jobs:
-    release:
+    publish:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v4
@@ -25,13 +25,9 @@ jobs:
                     cache: npm
                     registry-url: https://registry.npmjs.org
             -   run: npm ci
-            # changeset が溜まっていれば「Version Packages」PR を作成/更新し、
-            # その PR がマージされたタイミングで publish (npm run release) を実行する。
-            -   uses: changesets/action@v1
-                with:
-                    publish: npm run release
+            -   run: npm run build
+            -   run: npm test
+            # access=public は package.json の publishConfig で設定済み。
+            -   run: npm publish --provenance
                 env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                    # OIDC Trusted Publishing を使う場合 NODE_AUTH_TOKEN は不要。
-                    # 従来トークン方式なら下行を有効化し、リポジトリの Secrets に NPM_TOKEN を登録する。
-                    # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,6 +1,5 @@
 # CI — lint / typecheck / test / build を検証する。
-# このワークフローは packages/voxsheet を独立リポジトリ (lembryo/voxsheet) に切り出した後に有効化される
-# （GitHub Actions はリポジトリ root の .github/ のみを読むため、モノレポ内では動作しない）。
+# push (main) と全 PR で実行。
 name: CI
 
 on:
