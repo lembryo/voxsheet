@@ -1,0 +1,33 @@
+# Release — GitHub Release を publish したとき（または手動実行）に npm へ公開する。
+# 認証はアクセストークン方式: リポジトリ Secrets に NPM_TOKEN を登録しておくこと
+#   （Granular Access Token / Read and write / Bypass 2FA を有効化）。
+name: Release
+
+on:
+    release:
+        types: [ published ]
+    workflow_dispatch:
+
+# provenance（公開元の証跡）を付けるため id-token を許可。
+# 不要なら id-token 行と publish の --provenance を外してよい。
+permissions:
+    contents: read
+    id-token: write
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: actions/setup-node@v4
+                with:
+                    node-version-file: .nvmrc
+                    cache: npm
+                    registry-url: https://registry.npmjs.org
+            -   run: npm ci
+            -   run: npm run build
+            -   run: npm test
+            # access=public は package.json の publishConfig で設定済み。
+            -   run: npm publish --provenance
+                env:
+                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

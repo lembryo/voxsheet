@@ -1,0 +1,452 @@
+/*
+ * voxsheet styles — 外部 CSS ライブラリに依存しない自己完結スタイル。
+ * カスタマイズは --vox-* 変数の上書きを推奨（クラス上書きも可・低詳細度）。
+ */
+
+.vox-sheet {
+    /* テーマ変数（ライト既定） */
+    --vox-color-bg: #ffffff;
+    --vox-color-fg: #1f2328;
+    --vox-color-muted: #57606a;
+    --vox-color-border: #d0d7de;
+    --vox-color-grid: #e6e8eb;
+    --vox-color-header-bg: #f6f8fa;
+    --vox-color-header-fg: #1f2328;
+    --vox-color-row-stripe: #fbfcfd;
+    --vox-color-selection-bg: rgba(9, 105, 218, 0.1);
+    --vox-color-selection-border: #0969da;
+    --vox-color-active-border: #0969da;
+    --vox-color-dirty-bg: rgba(212, 167, 44, 0.18);
+    --vox-color-search-hit-bg: rgba(255, 212, 0, 0.35);
+    --vox-color-search-current-bg: rgba(255, 159, 0, 0.55);
+    --vox-color-accent: #0969da;
+
+    --vox-font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --vox-font-size: 13px;
+    --vox-header-font-weight: 600;
+    --vox-row-height: 28px;
+    --vox-row-header-width: 52px;
+    --vox-cell-padding-x: 6px;
+    --vox-border-width: 1px;
+    --vox-focus-ring: 0 0 0 2px rgba(9, 105, 218, 0.4);
+
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    color: var(--vox-color-fg);
+    background: var(--vox-color-bg);
+    font-family: var(--vox-font-family);
+    font-size: var(--vox-font-size);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.vox-sheet *,
+.vox-sheet *::before,
+.vox-sheet *::after {
+    box-sizing: border-box;
+}
+
+/* ダークモード: prefers-color-scheme 自動追従（data-vox-theme で強制可） */
+@media (prefers-color-scheme: dark) {
+    .vox-sheet:not([data-vox-theme="light"]) {
+        --vox-color-bg: #0d1117;
+        --vox-color-fg: #e6edf3;
+        --vox-color-muted: #8b949e;
+        --vox-color-border: #30363d;
+        --vox-color-grid: #21262d;
+        --vox-color-header-bg: #161b22;
+        --vox-color-header-fg: #e6edf3;
+        --vox-color-row-stripe: #11161d;
+        --vox-color-selection-bg: rgba(56, 139, 253, 0.18);
+        --vox-color-selection-border: #388bfd;
+        --vox-color-active-border: #388bfd;
+        --vox-color-dirty-bg: rgba(187, 128, 9, 0.25);
+        --vox-color-accent: #388bfd;
+    }
+}
+
+.vox-sheet[data-vox-theme="dark"] {
+    --vox-color-bg: #0d1117;
+    --vox-color-fg: #e6edf3;
+    --vox-color-muted: #8b949e;
+    --vox-color-border: #30363d;
+    --vox-color-grid: #21262d;
+    --vox-color-header-bg: #161b22;
+    --vox-color-header-fg: #e6edf3;
+    --vox-color-row-stripe: #11161d;
+    --vox-color-selection-bg: rgba(56, 139, 253, 0.18);
+    --vox-color-selection-border: #388bfd;
+    --vox-color-active-border: #388bfd;
+    --vox-color-dirty-bg: rgba(187, 128, 9, 0.25);
+    --vox-color-accent: #388bfd;
+}
+
+/* ヘッダ */
+.vox-header-wrap {
+    display: flex;
+    flex: 0 0 auto;
+    background: var(--vox-color-header-bg);
+    border-bottom: var(--vox-border-width) solid var(--vox-color-border);
+}
+
+.vox-corner {
+    flex: 0 0 auto;
+    border-right: var(--vox-border-width) solid var(--vox-color-border);
+    cursor: pointer;
+}
+
+.vox-header {
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.vox-header-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    height: var(--vox-row-height);
+    padding: 0 var(--vox-cell-padding-x);
+    border-right: var(--vox-border-width) solid var(--vox-color-border);
+    font-weight: var(--vox-header-font-weight);
+    color: var(--vox-color-header-fg);
+    user-select: none;
+    overflow: hidden;
+}
+
+.vox-header-label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vox-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+.vox-header-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border: none;
+    background: transparent;
+    color: var(--vox-color-muted);
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.vox-header-btn:hover {
+    background: var(--vox-color-selection-bg);
+    color: var(--vox-color-fg);
+}
+
+.vox-add-column {
+    flex: 0 0 auto;
+    width: var(--vox-row-height);
+    border: none;
+    border-right: var(--vox-border-width) solid var(--vox-color-border);
+    background: transparent;
+    color: var(--vox-color-muted);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.vox-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 2;
+}
+
+/* 固定行バンド（先頭 N 行をスクロール外に固定。横スクロールのみ本体に同期） */
+.vox-frozen-band {
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-bottom: 2px solid var(--vox-color-border);
+    background: var(--vox-color-bg);
+}
+
+.vox-frozen-scroll {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.vox-frozen-inner {
+    position: relative;
+}
+
+/* 本体 */
+.vox-body {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+.vox-scroll-spacer {
+    position: relative;
+}
+
+.vox-row {
+    position: absolute;
+    left: 0;
+    display: flex;
+}
+
+.vox-row-header {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    padding: 0 var(--vox-cell-padding-x);
+    background: var(--vox-color-header-bg);
+    color: var(--vox-color-muted);
+    border-right: var(--vox-border-width) solid var(--vox-color-border);
+    border-bottom: var(--vox-border-width) solid var(--vox-color-border);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    cursor: default;
+}
+
+.vox-row-header--selected {
+    background: var(--vox-color-selection-bg);
+    color: var(--vox-color-fg);
+}
+
+.vox-row-lead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-bottom: var(--vox-border-width) solid var(--vox-color-border);
+}
+
+.vox-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    height: 100%;
+    padding: 0 var(--vox-cell-padding-x);
+    border-right: var(--vox-border-width) solid var(--vox-color-grid);
+    border-bottom: var(--vox-border-width) solid var(--vox-color-grid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: cell;
+    user-select: none;
+}
+
+.vox-cell--selected {
+    background: var(--vox-color-selection-bg);
+}
+
+/* アクティブセルは Excel 同様に白（塗りなし）。範囲の枠線はオーバーレイで描く。 */
+.vox-cell--active {
+    background: var(--vox-color-bg);
+}
+
+/* 選択範囲を 1 本の枠線で囲うオーバーレイ（レンジごとに 1 枚）。 */
+.vox-selection-outline {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    box-sizing: border-box;
+    border: 2px solid var(--vox-color-selection-border);
+}
+
+.vox-cell--dirty {
+    background: var(--vox-color-dirty-bg);
+}
+
+.vox-cell--search-hit {
+    background: var(--vox-color-search-hit-bg);
+}
+
+.vox-cell--search-current {
+    background: var(--vox-color-search-current-bg);
+}
+
+.vox-cell-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    background: var(--vox-color-bg);
+    color: var(--vox-color-fg);
+    font: inherit;
+    user-select: text;
+}
+
+.vox-fill-handle {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 7px;
+    height: 7px;
+    background: var(--vox-color-active-border);
+    border: 1px solid var(--vox-color-bg);
+    cursor: crosshair;
+    z-index: 3;
+}
+
+/* オーバーレイ（ローディング/空） */
+.vox-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vox-color-muted);
+    background: color-mix(in srgb, var(--vox-color-bg) 70%, transparent);
+    pointer-events: none;
+}
+
+/* コンテキストメニュー */
+.vox-context-menu {
+    position: fixed;
+    z-index: 1000;
+    min-width: 180px;
+    padding: 4px;
+    background: var(--vox-color-bg);
+    color: var(--vox-color-fg);
+    border: var(--vox-border-width) solid var(--vox-color-border);
+    border-radius: 6px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+.vox-context-item {
+    display: block;
+    width: 100%;
+    padding: 6px 10px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.vox-context-item:hover:not(:disabled) {
+    background: var(--vox-color-selection-bg);
+}
+
+.vox-context-item:disabled {
+    color: var(--vox-color-muted);
+    cursor: default;
+    opacity: 0.6;
+}
+
+.vox-context-separator {
+    height: 1px;
+    margin: 4px 0;
+    background: var(--vox-color-border);
+}
+
+/* 内蔵トースト */
+.vox-toast-container {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vox-toast {
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: #fff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.vox-toast--loading {
+    background: #57606a;
+}
+
+.vox-toast--success {
+    background: #1a7f37;
+}
+
+.vox-toast--error {
+    background: #cf222e;
+}
+
+.vox-toast--info {
+    background: #0969da;
+}
+
+/* 内蔵確認モーダル */
+.vox-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.vox-modal {
+    min-width: 320px;
+    max-width: 480px;
+    padding: 16px;
+    background: #fff;
+    color: #1f2328;
+    border-radius: 8px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.vox-modal-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.vox-modal-body {
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.vox-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.vox-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--vox-color-border, #d0d7de);
+    border-radius: 6px;
+    background: #f6f8fa;
+    color: #1f2328;
+    cursor: pointer;
+    font: inherit;
+}
+
+.vox-btn--primary {
+    background: #0969da;
+    border-color: #0969da;
+    color: #fff;
+}
