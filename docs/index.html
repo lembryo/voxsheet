@@ -1,31 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <title>voxsheet — Virtual-scrolling React spreadsheet &amp; data grid | @lembryo/voxsheet</title>
-    <meta name="description" content="@lembryo/voxsheet — a React spreadsheet / data grid that renders millions of rows smoothly with virtual scrolling. Excel-like editing, autofill, and server-driven sort / filter / search. TypeScript-first, MIT licensed. 仮想スクロール対応の React スプレッドシート。" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#06c755" />
+    <meta
+        content="@lembryo/voxsheet — a React spreadsheet / data grid that renders millions of rows smoothly with virtual scrolling. Excel-like editing, autofill, and server-driven sort / filter / search. TypeScript-first, MIT licensed. 仮想スクロール対応の React スプレッドシート。"
+        name="description"/>
+    <meta content="index, follow, max-image-preview:large" name="robots"/>
+    <meta content="#06c755" name="theme-color"/>
 
-    <link rel="canonical" href="https://lembryo.github.io/voxsheet/" />
-    <link rel="alternate" hreflang="en" href="https://lembryo.github.io/voxsheet/en/" />
-    <link rel="alternate" hreflang="ja" href="https://lembryo.github.io/voxsheet/ja/" />
-    <link rel="alternate" hreflang="x-default" href="https://lembryo.github.io/voxsheet/" />
+    <link href="https://lembryo.github.io/voxsheet/" rel="canonical"/>
+    <link href="https://lembryo.github.io/voxsheet/en/" hreflang="en" rel="alternate"/>
+    <link href="https://lembryo.github.io/voxsheet/ja/" hreflang="ja" rel="alternate"/>
+    <link href="https://lembryo.github.io/voxsheet/" hreflang="x-default" rel="alternate"/>
 
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="@lembryo/voxsheet" />
-    <meta property="og:title" content="voxsheet — Virtual-scrolling React spreadsheet &amp; data grid" />
-    <meta property="og:description" content="Render millions of rows smoothly in React. Excel-like editing, autofill, and server-driven sort / filter / search. TypeScript-first, MIT licensed." />
-    <meta property="og:url" content="https://lembryo.github.io/voxsheet/" />
-    <meta property="og:image" content="https://lembryo.github.io/voxsheet/og-image.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://lembryo.github.io/voxsheet/og-image.jpg" />
+    <meta content="website" property="og:type"/>
+    <meta content="@lembryo/voxsheet" property="og:site_name"/>
+    <meta content="voxsheet — Virtual-scrolling React spreadsheet &amp; data grid" property="og:title"/>
+    <meta
+        content="Render millions of rows smoothly in React. Excel-like editing, autofill, and server-driven sort / filter / search. TypeScript-first, MIT licensed."
+        property="og:description"/>
+    <meta content="https://lembryo.github.io/voxsheet/" property="og:url"/>
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" property="og:image"/>
+    <meta content="image/jpeg" property="og:image:type"/>
+    <meta content="1200" property="og:image:width"/>
+    <meta content="630" property="og:image:height"/>
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" name="twitter:image"/>
 
-    <link rel="icon" href="./favicon.png" type="image/png" />
+    <link href="./favicon.png" rel="icon" type="image/png"/>
     <script>
         // 言語を選んで /ja または /en へ振り分ける。
         // 1) 以前の選択（localStorage） 2) ブラウザ言語 3) 既定は英語
@@ -33,19 +37,20 @@
             var lang
             try {
                 lang = localStorage.getItem("voxsheet-lang")
-            } catch (e) {}
+            } catch (e) {
+            }
             if (lang !== "ja" && lang !== "en") {
                 lang = (navigator.language || "").toLowerCase().indexOf("ja") === 0 ? "ja" : "en"
             }
             location.replace(lang === "ja" ? "./ja/" : "./en/")
         })()
     </script>
-    <meta http-equiv="refresh" content="0; url=./en/" />
+    <meta content="0; url=./en/" http-equiv="refresh"/>
 </head>
 <body>
-    <p style="font-family:sans-serif;padding:24px">
-        Redirecting… / 移動中… &nbsp;
-        <a href="./en/">English</a> · <a href="./ja/">日本語</a>
-    </p>
+<p style="font-family:sans-serif;padding:24px">
+    Redirecting… / 移動中… &nbsp;
+    <a href="./en/">English</a> · <a href="./ja/">日本語</a>
+</p>
 </body>
 </html>

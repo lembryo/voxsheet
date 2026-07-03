@@ -100,9 +100,7 @@
 
     // ---------- 右TOCを見出しから生成 ----------
     var tocList = document.getElementById("tocList")
-    var headings = Array.prototype.slice.call(
-        document.querySelectorAll(".content h2, .content h3"),
-    )
+    var headings = Array.prototype.slice.call(document.querySelectorAll(".content h2, .content h3"))
     var tocLinks = []
     headings.forEach(function (h) {
         var id = h.id

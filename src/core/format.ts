@@ -1,4 +1,4 @@
-import type { CellValue, Column, ColumnAlign, ColumnType } from '../types';
+import type { CellValue, Column, ColumnAlign, ColumnType } from "../types"
 
 /** 型から既定の水平アラインを導出する。 */
 export const defaultAlign = (type: ColumnType | undefined): ColumnAlign => {

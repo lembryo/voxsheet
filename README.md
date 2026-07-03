@@ -13,7 +13,10 @@ selection, editing, autofill, clipboard, column resize, and host-controlled
 (server-driven) sort / filter / search. React component, peer-dependency model,
 TypeScript-first, no external CSS framework.
 
-**[📖 Documentation](https://lembryo.github.io/voxsheet/) · [▶ Live demo](https://lembryo.github.io/voxsheet/demo/) · [npm](https://www.npmjs.com/package/@lembryo/voxsheet)**
+*
+
+*[📖 Documentation](https://lembryo.github.io/voxsheet/) · [▶ Live demo](https://lembryo.github.io/voxsheet/demo/) · [npm](https://www.npmjs.com/package/@lembryo/voxsheet)
+**
 
 ## Why voxsheet?
 
@@ -31,12 +34,12 @@ voxsheet combines a **free (MIT) Excel-like editing experience** with a
 
 Several of these features are paid or separately licensed in other major grids:
 
-| Feature | voxsheet | Representative alternatives |
-| --- | --- | --- |
+| Feature                | voxsheet           | Representative alternatives                       |
+|------------------------|--------------------|---------------------------------------------------|
 | Autofill (fill handle) | **Built in, free** | AG Grid: Enterprise (paid); MUI X: Premium (paid) |
-| Multi-range selection | **Built in, free** | AG Grid: Enterprise (paid) |
-| Server-driven data | **Built in** | AG Grid: Enterprise (Server-Side Row Model) |
-| License | **MIT** | Handsontable: paid license for commercial use |
+| Multi-range selection  | **Built in, free** | AG Grid: Enterprise (paid)                        |
+| Server-driven data     | **Built in**       | AG Grid: Enterprise (Server-Side Row Model)       |
+| License                | **MIT**            | Handsontable: paid license for commercial use     |
 
 > For breadth (row grouping, pivoting, frozen columns) and maturity, established
 > grids such as AG Grid lead. voxsheet fits "React, free, Excel-like editing with
@@ -136,7 +139,31 @@ type Column = {
     format?: ColumnFormat                          // Intl options or a function
     editable?: boolean | ((ctx: { row: number }) => boolean)
     validate?: (value: CellValue, ctx: { row: number }) => boolean | string
+    sortModes?: { id: string; label: string }[]    // e.g. text vs numeric; adds a ▾ picker
+    defaultSortMode?: string                       // initial mode id (defaults to sortModes[0])
 }
+```
+
+### Sort modes
+
+Some columns can be ordered more than one way — the same values may need a **text**
+sort or a **numeric** sort. Declare the choices with `Column.sortModes` and the header
+gains a small `▾` picker. The chosen mode id rides along on `SortSpec.mode`; **your
+backend decides what it means** (the grid only carries the id, staying transport-agnostic).
+Columns without `sortModes` behave exactly as before — no `mode` is sent, so the default
+is your backend's plain (text) ordering.
+
+```ts
+type SortSpec = { column: string; direction: "asc" | "desc"; mode?: string }
+
+const columns: Column[] = [
+    { name: "code", sortModes: [
+        { id: "text", label: "Text" },
+        { id: "numeric", label: "Numeric" },
+    ], defaultSortMode: "text" },
+]
+// fetchRows receives e.g. { column: "code", direction: "asc", mode: "numeric" };
+// translate mode → ORDER BY on the server.
 ```
 
 ## Key props
@@ -148,6 +175,8 @@ type Column = {
 | `fetchRows`                     | `FetchRowsFn`                            | required                                               |
 | `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`        |
 | `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work) |
+| `frozenRows`                    | `number`                                 | freeze the first N rows to the top (default 0)         |
+| `frozenColumns`                 | `number`                                 | freeze the first N columns to the left (default 0)     |
 | `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                            |
 | `rowHeight`                     | `number`                                 | overrides density height                               |
 | `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                  |
@@ -161,9 +190,14 @@ button only appears when `onSortChange` is set, the filter button only when
 and header rename is enabled only when `onColumnRename` is set.
 
 `onSortChange`, `onFilterButtonClick(col, anchorRect)`, `onColumnResize`,
-`onColumnRename`, `onAddColumn`, `onCellChange`, `onDirtyChange`, `onAppendRow`,
-`onInsertRow`, `onDeleteRows`, `onAutoFill`, `onSelectionChange`,
-`onSelectionStats`, `onCellKeyDown`, `onError`.
+`onColumnRename`, `onColumnReorder(from, to)`, `onAddColumn`, `onCellChange`,
+`onDirtyChange`, `onAppendRow`, `onInsertRow`, `onDeleteRows`, `onAutoFill`,
+`onSelectionChange`, `onSelectionStats`, `onCellKeyDown`, `onError`.
+
+Dragging a column header emits `onColumnReorder(from, to)` (with an insertion
+indicator during the drag); reflect the move by reordering `columns` — the order
+is host-controlled. The filter button shows a small count badge when a column has
+more than one active `FilterSpec`.
 
 ### Imperative handle (`ref`)
 
@@ -202,8 +236,13 @@ Self-contained styles under `vox-` classes and `--vox-*` CSS variables; import
 `--vox-color-accent`) or class rules to theme. Dark mode follows
 `prefers-color-scheme` and can be forced via the `theme` prop.
 
-> Not yet implemented in this version: `frozenRows` (the prop is accepted but does
-> not yet render a frozen band) and `frozenColumns` (v2).
+> **Where to override variables:** the `--vox-*` variables are declared on the
+> `.vox-sheet` root (not `:root`), so overriding them on `:root` has no effect.
+> Scope your overrides to `.vox-sheet` (or a wrapper class), e.g.:
+>
+> ```css
+> .vox-sheet { --vox-row-height: 32px; --vox-color-accent: #06c755; }
+> ```
 
 ## License
 
