@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lembryo.github.io/voxsheet/sitemap.xml

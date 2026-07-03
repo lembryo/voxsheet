@@ -1,11 +1,17 @@
 # @lembryo/voxsheet
 
-Voxel-style virtual spreadsheet renderer for the web.
+A virtual-scrolling **React spreadsheet / data grid** for millions of rows.
+
+[![npm version](https://img.shields.io/npm/v/@lembryo/voxsheet.svg)](https://www.npmjs.com/package/@lembryo/voxsheet)
+[![npm downloads](https://img.shields.io/npm/dm/@lembryo/voxsheet.svg)](https://www.npmjs.com/package/@lembryo/voxsheet)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@lembryo/voxsheet.svg)](https://bundlephobia.com/package/@lembryo/voxsheet)
+[![types](https://img.shields.io/npm/types/@lembryo/voxsheet.svg)](https://www.npmjs.com/package/@lembryo/voxsheet)
+[![license](https://img.shields.io/npm/l/@lembryo/voxsheet.svg)](./LICENSE)
 
 Render millions of rows smoothly with DOM-based virtual scrolling. Excel-like
 selection, editing, autofill, clipboard, column resize, and host-controlled
-sort / filter / search. React component, peer-dependency model, TypeScript-first,
-no external CSS framework.
+(server-driven) sort / filter / search. React component, peer-dependency model,
+TypeScript-first, no external CSS framework.
 
 **[📖 Documentation](https://lembryo.github.io/voxsheet/) · [▶ Live demo](https://lembryo.github.io/voxsheet/demo/) · [npm](https://www.npmjs.com/package/@lembryo/voxsheet)**
 
