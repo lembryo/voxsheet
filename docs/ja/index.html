@@ -1,85 +1,102 @@
 <!doctype html>
-<html lang="ja" data-lang="ja">
+<html data-lang="ja" lang="ja">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <title>voxsheet — 数百万行対応の React スプレッドシート／データグリッド | @lembryo/voxsheet ドキュメント</title>
-    <meta name="description" content="@lembryo/voxsheet は仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート／データグリッド。Excel 風の選択・編集・オートフィル・コピペ・列リサイズ、サーバ駆動のソート／フィルタ／検索に対応。TypeScript ファースト・MIT ライセンス。インストールから API まで日本語で解説。" />
-    <meta name="keywords" content="voxsheet, React スプレッドシート, React データグリッド, 仮想スクロール, virtual scroll, data grid, spreadsheet component, Excel 風グリッド, オートフィル, TypeScript, 大量データ, サーバサイド, MIT" />
-    <meta name="author" content="mao" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-    <meta name="theme-color" content="#06c755" />
-    <meta name="google" content="notranslate" />
+    <meta
+        content="@lembryo/voxsheet は仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート／データグリッド。Excel 風の選択・編集・オートフィル・コピペ・列リサイズ、サーバ駆動のソート／フィルタ／検索に対応。TypeScript ファースト・MIT ライセンス。インストールから API まで日本語で解説。"
+        name="description"/>
+    <meta
+        content="voxsheet, React スプレッドシート, React データグリッド, 仮想スクロール, virtual scroll, data grid, spreadsheet component, Excel 風グリッド, オートフィル, TypeScript, 大量データ, サーバサイド, MIT"
+        name="keywords"/>
+    <meta content="mao" name="author"/>
+    <meta content="index, follow, max-image-preview:large, max-snippet:-1" name="robots"/>
+    <meta content="#06c755" name="theme-color"/>
+    <meta content="notranslate" name="google"/>
 
-    <link rel="canonical" href="https://lembryo.github.io/voxsheet/ja/" />
-    <link rel="alternate" hreflang="ja" href="https://lembryo.github.io/voxsheet/ja/" />
-    <link rel="alternate" hreflang="en" href="https://lembryo.github.io/voxsheet/en/" />
-    <link rel="alternate" hreflang="x-default" href="https://lembryo.github.io/voxsheet/" />
+    <link href="https://lembryo.github.io/voxsheet/ja/" rel="canonical"/>
+    <link href="https://lembryo.github.io/voxsheet/ja/" hreflang="ja" rel="alternate"/>
+    <link href="https://lembryo.github.io/voxsheet/en/" hreflang="en" rel="alternate"/>
+    <link href="https://lembryo.github.io/voxsheet/" hreflang="x-default" rel="alternate"/>
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="@lembryo/voxsheet" />
-    <meta property="og:locale" content="ja_JP" />
-    <meta property="og:locale:alternate" content="en_US" />
-    <meta property="og:title" content="voxsheet — 数百万行対応の React スプレッドシート／データグリッド" />
-    <meta property="og:description" content="仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート。Excel 風の編集・オートフィル・サーバ駆動のソート／フィルタ／検索に対応。TypeScript ファースト・MIT。" />
-    <meta property="og:url" content="https://lembryo.github.io/voxsheet/ja/" />
-    <meta property="og:image" content="https://lembryo.github.io/voxsheet/og-image.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="@lembryo/voxsheet — 仮想スクロール対応の React スプレッドシート／データグリッド" />
+    <meta content="website" property="og:type"/>
+    <meta content="@lembryo/voxsheet" property="og:site_name"/>
+    <meta content="ja_JP" property="og:locale"/>
+    <meta content="en_US" property="og:locale:alternate"/>
+    <meta content="voxsheet — 数百万行対応の React スプレッドシート／データグリッド" property="og:title"/>
+    <meta
+        content="仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート。Excel 風の編集・オートフィル・サーバ駆動のソート／フィルタ／検索に対応。TypeScript ファースト・MIT。"
+        property="og:description"/>
+    <meta content="https://lembryo.github.io/voxsheet/ja/" property="og:url"/>
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" property="og:image"/>
+    <meta content="image/jpeg" property="og:image:type"/>
+    <meta content="1200" property="og:image:width"/>
+    <meta content="630" property="og:image:height"/>
+    <meta content="@lembryo/voxsheet — 仮想スクロール対応の React スプレッドシート／データグリッド"
+          property="og:image:alt"/>
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="voxsheet — 数百万行対応の React スプレッドシート／データグリッド" />
-    <meta name="twitter:description" content="仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート。Excel 風編集・オートフィル・サーバ駆動のソート／フィルタ／検索。MIT ライセンス。" />
-    <meta name="twitter:image" content="https://lembryo.github.io/voxsheet/og-image.jpg" />
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="voxsheet — 数百万行対応の React スプレッドシート／データグリッド" name="twitter:title"/>
+    <meta
+        content="仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート。Excel 風編集・オートフィル・サーバ駆動のソート／フィルタ／検索。MIT ライセンス。"
+        name="twitter:description"/>
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" name="twitter:image"/>
 
-    <link rel="icon" href="../favicon.png" type="image/png" />
-    <link rel="stylesheet" href="../styles.css" />
+    <link href="../favicon.png" rel="icon" type="image/png"/>
+    <link href="../styles.css" rel="stylesheet"/>
 
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "@lembryo/voxsheet",
-        "alternateName": "voxsheet",
-        "description": "仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート／データグリッドコンポーネント。Excel 風の選択・編集・オートフィル・コピー＆ペースト・列リサイズ、サーバ駆動のソート／フィルタ／検索に対応。",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web",
-        "softwareVersion": "1.0.0",
-        "programmingLanguage": "TypeScript",
-        "url": "https://lembryo.github.io/voxsheet/",
-        "downloadUrl": "https://www.npmjs.com/package/@lembryo/voxsheet",
-        "sameAs": [
-            "https://github.com/lembryo/voxsheet",
-            "https://www.npmjs.com/package/@lembryo/voxsheet"
-        ],
-        "license": "https://opensource.org/licenses/MIT",
-        "author": { "@type": "Person", "name": "mao", "email": "mao.lembryo@gmail.com" },
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "inLanguage": "ja"
-    }
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "@lembryo/voxsheet",
+            "alternateName": "voxsheet",
+            "description": "仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシート／データグリッドコンポーネント。Excel 風の選択・編集・オートフィル・コピー＆ペースト・列リサイズ、サーバ駆動のソート／フィルタ／検索に対応。",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "softwareVersion": "1.1.0",
+            "programmingLanguage": "TypeScript",
+            "url": "https://lembryo.github.io/voxsheet/",
+            "downloadUrl": "https://www.npmjs.com/package/@lembryo/voxsheet",
+            "sameAs": [
+                "https://github.com/lembryo/voxsheet",
+                "https://www.npmjs.com/package/@lembryo/voxsheet"
+            ],
+            "license": "https://opensource.org/licenses/MIT",
+            "author": {
+                "@type": "Person",
+                "name": "mao",
+                "email": "mao.lembryo@gmail.com"
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "inLanguage": "ja"
+        }
     </script>
 </head>
 <body>
 <header class="site-header">
-    <button class="menu-toggle" aria-label="メニュー" id="menuToggle">☰</button>
+    <button aria-label="メニュー" class="menu-toggle" id="menuToggle">☰</button>
     <a class="brand" href="./">
         <span class="logo">V</span>
         <span>voxsheet</span>
-        <span class="ver">v1.0.0</span>
+        <span class="ver">v1.1.0</span>
     </a>
     <span class="spacer"></span>
     <div class="lang-switch">
-        <a href="./" class="active">日本語</a>
-        <a href="../en/" data-lang-link data-lang="en">EN</a>
+        <a class="active" href="./">日本語</a>
+        <a data-lang="en" data-lang-link href="../en/">EN</a>
     </div>
     <nav class="header-links">
         <a href="../demo/">デモ</a>
-        <a href="https://www.npmjs.com/package/@lembryo/voxsheet" target="_blank" rel="noopener">npm</a>
-        <a href="https://github.com/lembryo/voxsheet" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/@lembryo/voxsheet" rel="noopener" target="_blank">npm</a>
+        <a href="https://github.com/lembryo/voxsheet" rel="noopener" target="_blank">GitHub</a>
     </nav>
 </header>
 
@@ -136,6 +153,9 @@
                     <li><a href="#selection">選択と集計</a></li>
                     <li><a href="#autofill">オートフィル</a></li>
                     <li><a href="#keyboard">キーボード操作</a></li>
+                    <li><a href="#frozen-rows">行の固定</a></li>
+                    <li><a href="#frozen-columns">列の固定</a></li>
+                    <li><a href="#reorder">列の並べ替え</a></li>
                 </ul>
             </div>
             <div class="nav-group">
@@ -161,65 +181,111 @@
     <main class="content">
         <div class="content-inner">
             <h1>@lembryo/voxsheet</h1>
-            <p class="lead">仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシートコンポーネント。Excel 風の選択・編集・オートフィル・コピペ・列リサイズ、ホスト制御のソート/フィルタ/検索に対応します。</p>
+            <p class="lead">仮想スクロールで数百万行を滑らかに描画する React 製スプレッドシートコンポーネント。Excel
+                風の選択・編集・オートフィル・コピペ・列リサイズ、ホスト制御のソート/フィルタ/検索に対応します。</p>
 
             <p style="margin:0 0 28px">
-                <a href="../demo/" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
+                <a href="../demo/"
+                   style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
                     ▶ ライブデモを開く
                 </a>
-                <span style="color:var(--text-faint);font-size:13px;margin-left:12px">ブラウザ内データで実際に動かせます</span>
+                <span
+                    style="color:var(--text-faint);font-size:13px;margin-left:12px">ブラウザ内データで実際に動かせます</span>
             </p>
 
             <section id="overview">
                 <h2>概要</h2>
-                <p><code>VoxSheet</code> は DOM ベースの仮想スクロールにより、行数が膨大でも表示中のセルだけを描画します。データ取得とドメイン状態（ソート・フィルタ・検索）は<strong>ホストが所有</strong>し、ビューポート・選択・編集バッファ・キーボードは<strong>グリッドが所有</strong>します。</p>
+                <p><code>VoxSheet</code> は DOM ベースの仮想スクロールにより、行数が膨大でも表示中のセルだけを描画します。データ取得とドメイン状態（ソート・フィルタ・検索）は<strong>ホストが所有</strong>し、ビューポート・選択・編集バッファ・キーボードは<strong>グリッドが所有</strong>します。
+                </p>
                 <ul class="bullets">
-                    <li><strong>Transport 非依存</strong> — 取得手段は <code>fetchRows</code> に委ねるため、REST / GraphQL / ローカル配列どれでも可。</li>
+                    <li><strong>Transport 非依存</strong> — 取得手段は <code>fetchRows</code> に委ねるため、REST /
+                        GraphQL / ローカル配列どれでも可。
+                    </li>
                     <li><strong>TypeScript ファースト</strong> — 公開 API はすべて型付き。</li>
-                    <li><strong>ピア依存モデル</strong> — <code>react</code> / <code>react-dom</code> は peer dependency。</li>
-                    <li><strong>外部 CSS フレームワーク不使用</strong> — <code>--vox-*</code> 変数と <code>vox-</code> クラスで完結。</li>
+                    <li><strong>ピア依存モデル</strong> — <code>react</code> / <code>react-dom</code> は peer
+                        dependency。
+                    </li>
+                    <li><strong>外部 CSS フレームワーク不使用</strong> — <code>--vox-*</code> 変数と <code>vox-</code>
+                        クラスで完結。
+                    </li>
                 </ul>
             </section>
 
             <section id="why">
                 <h2>なぜ voxsheet？</h2>
-                <p>voxsheet の特徴は、<strong>「無償（MIT）で Excel 風の編集体験」</strong>と<strong>「サーバ駆動を前提にした設計」</strong>を最初から両立している点です。</p>
+                <p>voxsheet の特徴は、<strong>「無償（MIT）で Excel
+                    風の編集体験」</strong>と<strong>「サーバ駆動を前提にした設計」</strong>を最初から両立している点です。
+                </p>
                 <ul class="bullets">
-                    <li><strong>無償で Excel 風編集</strong> — オートフィル（フィルハンドル）・複数レンジ選択・コピー＆ペースト・列リサイズを標準装備。</li>
-                    <li><strong>サーバ駆動が前提</strong> — ソート・フィルタ・検索・ページングを <code>fetchRows</code> 経由でバックエンドに委譲。巨大データでも可視範囲だけを取得します。</li>
-                    <li><strong>React ネイティブ / DOM ベース</strong> — hooks・controlled props・JSX セル。Canvas 実装と異なり、通常の DOM で拡張・検査・アクセシビリティを扱えます。</li>
-                    <li><strong>TypeScript ファースト・外部 CSS 不使用・peer 依存</strong> — 既存のビルドやテーマに溶け込みやすい。</li>
+                    <li><strong>無償で Excel 風編集</strong> — オートフィル（フィルハンドル）・複数レンジ選択・コピー＆ペースト・列リサイズを標準装備。
+                    </li>
+                    <li><strong>サーバ駆動が前提</strong> — ソート・フィルタ・検索・ページングを <code>fetchRows</code>
+                        経由でバックエンドに委譲。巨大データでも可視範囲だけを取得します。
+                    </li>
+                    <li><strong>React ネイティブ / DOM ベース</strong> — hooks・controlled props・JSX セル。Canvas
+                        実装と異なり、通常の DOM で拡張・検査・アクセシビリティを扱えます。
+                    </li>
+                    <li><strong>TypeScript ファースト・外部 CSS 不使用・peer 依存</strong> — 既存のビルドやテーマに溶け込みやすい。
+                    </li>
                 </ul>
                 <h3>競合との違い</h3>
-                <p>voxsheet が標準提供する機能には、他の主要グリッドでは有償プランや別ライセンスが必要なものがあります（下表は代表例。各製品のライセンスは変わり得るため、採用前に最新の条件を確認してください）。</p>
+                <p>voxsheet
+                    が標準提供する機能には、他の主要グリッドでは有償プランや別ライセンスが必要なものがあります（下表は代表例。各製品のライセンスは変わり得るため、採用前に最新の条件を確認してください）。</p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>機能</th><th>voxsheet</th><th>他の代表例</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>機能</th>
+                            <th>voxsheet</th>
+                            <th>他の代表例</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td>オートフィル（フィルハンドル）</td><td><strong>標準・無償</strong></td><td>AG Grid は Enterprise（有償）、MUI X は Premium（有償）</td></tr>
-                            <tr><td>複数レンジ選択</td><td><strong>標準・無償</strong></td><td>AG Grid は Enterprise（有償）</td></tr>
-                            <tr><td>サーバ駆動データ（取得をホストに委譲）</td><td><strong>標準</strong></td><td>AG Grid は Enterprise（Server-Side Row Model）</td></tr>
-                            <tr><td>ライセンス</td><td><strong>MIT</strong></td><td>Handsontable は商用利用に有償ライセンスが必要</td></tr>
+                        <tr>
+                            <td>オートフィル（フィルハンドル）</td>
+                            <td><strong>標準・無償</strong></td>
+                            <td>AG Grid は Enterprise（有償）、MUI X は Premium（有償）</td>
+                        </tr>
+                        <tr>
+                            <td>複数レンジ選択</td>
+                            <td><strong>標準・無償</strong></td>
+                            <td>AG Grid は Enterprise（有償）</td>
+                        </tr>
+                        <tr>
+                            <td>サーバ駆動データ（取得をホストに委譲）</td>
+                            <td><strong>標準</strong></td>
+                            <td>AG Grid は Enterprise（Server-Side Row Model）</td>
+                        </tr>
+                        <tr>
+                            <td>ライセンス</td>
+                            <td><strong>MIT</strong></td>
+                            <td>Handsontable は商用利用に有償ライセンスが必要</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="note">
                     <div class="note-title">選び方の目安</div>
-                    行グループ・ピボット・列固定など<strong>機能の幅や成熟度</strong>は専業の大規模グリッド（AG Grid 等）が先行します。voxsheet は<strong>「React で、無償で、Excel 風編集とサーバ駆動を素直に使いたい」</strong>用途に向いています。完全にフレームワーク非依存が必要なら Web Component 系（RevoGrid 等）も選択肢です。
+                    行グループ・ピボット・列固定など<strong>機能の幅や成熟度</strong>は専業の大規模グリッド（AG Grid
+                    等）が先行します。voxsheet は<strong>「React で、無償で、Excel
+                    風編集とサーバ駆動を素直に使いたい」</strong>用途に向いています。完全にフレームワーク非依存が必要なら
+                    Web Component 系（RevoGrid 等）も選択肢です。
                 </div>
             </section>
 
             <section id="installation">
                 <h2>インストール</h2>
                 <pre data-lang="bash"><code>npm install @lembryo/voxsheet</code></pre>
-                <p><code>react</code> / <code>react-dom</code>（v18 以上）は peer dependency です。スタイルシートのインポートも忘れずに行ってください。</p>
+                <p><code>react</code> / <code>react-dom</code>（v18 以上）は peer dependency です。スタイルシートのインポートも忘れずに行ってください。
+                </p>
                 <pre data-lang="ts"><code>import { VoxSheet } from "@lembryo/voxsheet"
 import "@lembryo/voxsheet/styles.css"</code></pre>
             </section>
 
             <section id="quickstart">
                 <h2>クイックスタート</h2>
-                <p>最小構成の例です。<code>columns</code>・<code>totalRows</code>・<code>fetchRows</code> の 3 つが必須です。</p>
+                <p>最小構成の例です。<code>columns</code>・<code>totalRows</code>・<code>fetchRows</code> の 3 つが必須です。
+                </p>
                 <pre data-lang="tsx"><code>import { useCallback, useState } from "react"
 import { VoxSheet } from "@lembryo/voxsheet"
 import type { Column, FetchResult, Query, SortSpec } from "@lembryo/voxsheet"
@@ -269,23 +335,40 @@ export function App() {
 }</code></pre>
                 <div class="note">
                     <div class="note-title">ポイント</div>
-                    ヘッダのボタンは<strong>対応するコールバックを渡したときだけ表示</strong>されます。たとえばソートボタンは <code>onSortChange</code> を渡したときのみ現れます。
+                    ヘッダのボタンは<strong>対応するコールバックを渡したときだけ表示</strong>されます。たとえばソートボタンは
+                    <code>onSortChange</code> を渡したときのみ現れます。
                 </div>
             </section>
 
             <section id="concepts">
                 <h2>コアコンセプト</h2>
-                <p><code>VoxSheet</code> は <strong>controlled かつ transport 非依存</strong>です。責務は次のように分かれます。</p>
+                <p><code>VoxSheet</code> は <strong>controlled かつ transport 非依存</strong>です。責務は次のように分かれます。
+                </p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>所有者</th><th>担当</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>所有者</th>
+                            <th>担当</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">ホスト</span></td><td>データソース（<code>fetchRows</code>）、ドメイン状態（<code>sort</code> / <code>filters</code> / <code>search</code>）、永続化（編集コミット）、フィルタ条件 UI</td></tr>
-                            <tr><td><span class="pname">グリッド</span></td><td>ビューポート（仮想スクロール）、セル選択、編集バッファ、Undo/Redo、キーボード、クリップボード</td></tr>
+                        <tr>
+                            <td><span class="pname">ホスト</span></td>
+                            <td>データソース（<code>fetchRows</code>）、ドメイン状態（<code>sort</code> /
+                                <code>filters</code> / <code>search</code>）、永続化（編集コミット）、フィルタ条件 UI
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">グリッド</span></td>
+                            <td>ビューポート（仮想スクロール）、セル選択、編集バッファ、Undo/Redo、キーボード、クリップボード
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
-                <p>ソートやフィルタの「状態」はホストが <code>useState</code> 等で持ち、グリッドはユーザー操作を<strong>コールバックで通知</strong>するだけです。状態が変わると <code>fetchRows</code> が新しい <code>Query</code> で再度呼ばれます。</p>
+                <p>ソートやフィルタの「状態」はホストが <code>useState</code> 等で持ち、グリッドはユーザー操作を<strong>コールバックで通知</strong>するだけです。状態が変わると
+                    <code>fetchRows</code> が新しい <code>Query</code> で再度呼ばれます。</p>
             </section>
 
             <section id="data-flow">
@@ -298,14 +381,17 @@ export function App() {
                 <p>セルの値。JSON シリアライズ可能な型に限定されます。</p>
                 <pre data-lang="ts"><code>type CellValue = string | number | boolean | null</code></pre>
                 <ul class="bullets">
-                    <li>日付は <strong>ISO 8601 文字列</strong>（推奨）または epoch ミリ秒で運び、列 <code>type: "date"</code> で解釈します。</li>
+                    <li>日付は <strong>ISO 8601 文字列</strong>（推奨）または epoch ミリ秒で運び、列 <code>type:
+                        "date"</code> で解釈します。
+                    </li>
                     <li><code>null</code> は SQL の NULL を表し、空文字 <code>""</code> と区別されます。</li>
                 </ul>
             </section>
 
             <section id="query">
                 <h3>Query</h3>
-                <p>グリッドが <code>fetchRows</code> に渡す取得条件。<code>offset</code> / <code>limit</code> はグリッドが決め、<code>sort</code> / <code>filters</code> / <code>search</code> はホストが渡した controlled 値がそのまま入ります。</p>
+                <p>グリッドが <code>fetchRows</code> に渡す取得条件。<code>offset</code> / <code>limit</code> はグリッドが決め、<code>sort</code>
+                    / <code>filters</code> / <code>search</code> はホストが渡した controlled 値がそのまま入ります。</p>
                 <pre data-lang="ts"><code>type Query = {
     offset: number
     limit: number
@@ -317,15 +403,38 @@ export function App() {
 
             <section id="fetchresult">
                 <h3>FetchResult</h3>
-                <p><code>fetchRows</code> が返す値。<code>data[i][j]</code> は i 行目・j 列目で、列順は <code>columns</code> に揃えます。</p>
+                <p><code>fetchRows</code> が返す値。<code>data[i][j]</code> は i 行目・j 列目で、列順は
+                    <code>columns</code> に揃えます。</p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">data</span><span class="req">必須</span></td><td class="ptype">CellValue[][]</td><td><code>data[i][j]</code> = i 行 j 列。列順は <code>columns</code> に整列。</td></tr>
-                            <tr><td><span class="pname">ids</span><span class="req">必須</span></td><td class="ptype">number[]</td><td>各行の安定 ID。編集コミット時に行→ID 解決に使う。</td></tr>
-                            <tr><td><span class="pname">ordinals</span><span class="req">必須</span></td><td class="ptype">number[]</td><td>行番号ガターに表示する連番。</td></tr>
-                            <tr><td><span class="pname">total</span><span class="opt">任意</span></td><td class="ptype">number</td><td>フィルタ/検索適用後の総件数。スクロールバーと同期する（毎回返すのが望ましい）。</td></tr>
+                        <tr>
+                            <td><span class="pname">data</span><span class="req">必須</span></td>
+                            <td class="ptype">CellValue[][]</td>
+                            <td><code>data[i][j]</code> = i 行 j 列。列順は <code>columns</code> に整列。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">ids</span><span class="req">必須</span></td>
+                            <td class="ptype">number[]</td>
+                            <td>各行の安定 ID。編集コミット時に行→ID 解決に使う。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">ordinals</span><span class="req">必須</span></td>
+                            <td class="ptype">number[]</td>
+                            <td>行番号ガターに表示する連番。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">total</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>フィルタ/検索適用後の総件数。スクロールバーと同期する（毎回返すのが望ましい）。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -344,18 +453,66 @@ export function App() {
             <section id="column">
                 <h2>列定義</h2>
                 <h3 style="margin-top:8px">Column</h3>
-                <p>列メタデータ。<code>type</code> が描画・編集・比較・オートフィルを駆動します。表示/非表示は配列から除外して表現します（controlled）。</p>
+                <p>列メタデータ。<code>type</code> が描画・編集・比較・オートフィルを駆動します。表示/非表示は配列から除外して表現します（controlled）。
+                </p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">name</span><span class="req">必須</span></td><td class="ptype">string</td><td>識別子兼表示名。<code>sort</code> / <code>filter</code> の <code>column</code> 参照に使う。</td></tr>
-                            <tr><td><span class="pname">type</span><span class="opt">任意</span></td><td class="ptype">"string" | "number" | "date" | "boolean"</td><td>既定 <code>"string"</code>。整形・整列・パース・比較の基準。</td></tr>
-                            <tr><td><span class="pname">align</span><span class="opt">任意</span></td><td class="ptype">"left" | "right" | "center"</td><td>既定は <code>type</code> から導出（number/date=right、boolean=center）。</td></tr>
-                            <tr><td><span class="pname">width</span><span class="opt">任意</span></td><td class="ptype">number</td><td>既定 <code>defaultColumnWidth</code>。ユーザーリサイズは列名キーで記憶。</td></tr>
-                            <tr><td><span class="pname">format</span><span class="opt">任意</span></td><td class="ptype">ColumnFormat</td><td>表示整形。下記参照。</td></tr>
-                            <tr><td><span class="pname">editable</span><span class="opt">任意</span></td><td class="ptype">boolean | ((ctx) =&gt; boolean)</td><td>既定は親 <code>readOnly</code> に従う。</td></tr>
-                            <tr><td><span class="pname">validate</span><span class="opt">任意</span></td><td class="ptype">(value, ctx) =&gt; boolean | string</td><td><code>false</code> または文字列（エラーメッセージ）で却下。</td></tr>
+                        <tr>
+                            <td><span class="pname">name</span><span class="req">必須</span></td>
+                            <td class="ptype">string</td>
+                            <td>識別子兼表示名。<code>sort</code> / <code>filter</code> の <code>column</code> 参照に使う。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">type</span><span class="opt">任意</span></td>
+                            <td class="ptype">"string" | "number" | "date" | "boolean"</td>
+                            <td>既定 <code>"string"</code>。整形・整列・パース・比較の基準。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">align</span><span class="opt">任意</span></td>
+                            <td class="ptype">"left" | "right" | "center"</td>
+                            <td>既定は <code>type</code> から導出（number/date=right、boolean=center）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">width</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>既定 <code>defaultColumnWidth</code>。ユーザーリサイズは列名キーで記憶。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">format</span><span class="opt">任意</span></td>
+                            <td class="ptype">ColumnFormat</td>
+                            <td>表示整形。下記参照。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">editable</span><span class="opt">任意</span></td>
+                            <td class="ptype">boolean | ((ctx) =&gt; boolean)</td>
+                            <td>既定は親 <code>readOnly</code> に従う。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">validate</span><span class="opt">任意</span></td>
+                            <td class="ptype">(value, ctx) =&gt; boolean | string</td>
+                            <td><code>false</code> または文字列（エラーメッセージ）で却下。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">sortModes</span><span class="opt">任意</span></td>
+                            <td class="ptype">{ id: string; label: string }[]</td>
+                            <td>並べ替え方式の選択肢（例: テキスト/数値）。▾ ピッカーを表示し、選択 id を <code>SortSpec.mode</code>
+                                に載せる。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">defaultSortMode</span><span class="opt">任意</span></td>
+                            <td class="ptype">string</td>
+                            <td>初期／既定の方式 id（未指定なら <code>sortModes[0]</code>）。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -363,7 +520,8 @@ export function App() {
 
             <section id="column-format">
                 <h3>表示整形 format</h3>
-                <p><code>Intl</code> のオプション、または任意の関数で値を文字列化します。解決順は <strong>関数 &gt; kind 別既定</strong> です。</p>
+                <p><code>Intl</code> のオプション、または任意の関数で値を文字列化します。解決順は <strong>関数 &gt; kind
+                    別既定</strong> です。</p>
                 <pre data-lang="ts"><code>type ColumnFormat =
     | { kind: "number"; options: Intl.NumberFormatOptions }
     | { kind: "date"; options: Intl.DateTimeFormatOptions }
@@ -396,12 +554,34 @@ export function App() {
                 <h3 style="margin-top:10px">データ</h3>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">columns</span><span class="req">必須</span></td><td class="ptype">Column[]</td><td>列定義（controlled）。</td></tr>
-                            <tr><td><span class="pname">totalRows</span><span class="req">必須</span></td><td class="ptype">number</td><td>総行数。<code>FetchResult.total</code> で同期する。</td></tr>
-                            <tr><td><span class="pname">fetchRows</span><span class="req">必須</span></td><td class="ptype">FetchRowsFn</td><td>行取得関数 <code>(query, signal) =&gt; Promise&lt;FetchResult&gt;</code>。</td></tr>
-                            <tr><td><span class="pname">queryKey</span><span class="opt">任意</span></td><td class="ptype">unknown</td><td>ホスト独自クエリ入力の無効化キー。変化でキャッシュを破棄して再取得。</td></tr>
+                        <tr>
+                            <td><span class="pname">columns</span><span class="req">必須</span></td>
+                            <td class="ptype">Column[]</td>
+                            <td>列定義（controlled）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">totalRows</span><span class="req">必須</span></td>
+                            <td class="ptype">number</td>
+                            <td>総行数。<code>FetchResult.total</code> で同期する。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">fetchRows</span><span class="req">必須</span></td>
+                            <td class="ptype">FetchRowsFn</td>
+                            <td>行取得関数 <code>(query, signal) =&gt; Promise&lt;FetchResult&gt;</code>。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">queryKey</span><span class="opt">任意</span></td>
+                            <td class="ptype">unknown</td>
+                            <td>ホスト独自クエリ入力の無効化キー。変化でキャッシュを破棄して再取得。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -411,15 +591,58 @@ export function App() {
                 <h3>レイアウト・表示</h3>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">rowHeight</span><span class="opt">任意</span></td><td class="ptype">number</td><td>行の高さ(px)。既定 28。<code>density</code> より優先。</td></tr>
-                            <tr><td><span class="pname">density</span><span class="opt">任意</span></td><td class="ptype">"compact" | "normal" | "comfortable"</td><td>フォントと行高をセットで切替。既定 <code>"normal"</code>。</td></tr>
-                            <tr><td><span class="pname">defaultColumnWidth</span><span class="opt">任意</span></td><td class="ptype">number</td><td>列幅の既定(px)。既定 120。</td></tr>
-                            <tr><td><span class="pname">frozenRows</span><span class="opt">任意</span></td><td class="ptype">number</td><td>先頭から固定する行数。既定 0。<strong>現バージョンでは未描画</strong>（下記制限事項）。</td></tr>
-                            <tr><td><span class="pname">theme</span><span class="opt">任意</span></td><td class="ptype">"light" | "dark" | "system"</td><td><code>data-vox-theme</code> を設定。既定 <code>"system"</code>。</td></tr>
-                            <tr><td><span class="pname">className</span><span class="opt">任意</span></td><td class="ptype">string</td><td>ルート要素のクラス。</td></tr>
-                            <tr><td><span class="pname">style</span><span class="opt">任意</span></td><td class="ptype">CSSProperties</td><td>ルート要素のインラインスタイル。</td></tr>
+                        <tr>
+                            <td><span class="pname">rowHeight</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>行の高さ(px)。既定 28。<code>density</code> より優先。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">density</span><span class="opt">任意</span></td>
+                            <td class="ptype">"compact" | "normal" | "comfortable"</td>
+                            <td>フォントと行高をセットで切替。既定 <code>"normal"</code>。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">defaultColumnWidth</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>列幅の既定(px)。既定 120。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">frozenRows</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>先頭から固定する行数。既定 0。先頭 N 行を本体スクロール外の固定バンドに描画します（横スクロールのみ同期）。1.1.0
+                                で対応。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">frozenColumns</span><span class="opt">任意</span></td>
+                            <td class="ptype">number</td>
+                            <td>先頭から固定する列数。既定 0。先頭 N
+                                列を横スクロール時も左に固定（sticky）。<code>frozenRows</code> と合成可。1.1.0 で対応。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">theme</span><span class="opt">任意</span></td>
+                            <td class="ptype">"light" | "dark" | "system"</td>
+                            <td><code>data-vox-theme</code> を設定。既定 <code>"system"</code>。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">className</span><span class="opt">任意</span></td>
+                            <td class="ptype">string</td>
+                            <td>ルート要素のクラス。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">style</span><span class="opt">任意</span></td>
+                            <td class="ptype">CSSProperties</td>
+                            <td>ルート要素のインラインスタイル。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -429,14 +652,44 @@ export function App() {
                 <h3>振る舞い（controlled ドメイン状態）</h3>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">readOnly</span><span class="opt">任意</span></td><td class="ptype">boolean</td><td>編集 UI を無効化（コピー・選択・ナビは可）。</td></tr>
-                            <tr><td><span class="pname">sort</span><span class="opt">任意</span></td><td class="ptype">SortSpec[]</td><td>多列ソート（controlled）。</td></tr>
-                            <tr><td><span class="pname">filters</span><span class="opt">任意</span></td><td class="ptype">FilterSpec[]</td><td>フィルタ（controlled・条件 UI はホスト所有）。</td></tr>
-                            <tr><td><span class="pname">search</span><span class="opt">任意</span></td><td class="ptype">string</td><td>検索キーワード。</td></tr>
-                            <tr><td><span class="pname">searchHighlights</span><span class="opt">任意</span></td><td class="ptype">CellAddress[]</td><td>ハイライト対象セル。</td></tr>
-                            <tr><td><span class="pname">currentSearchHit</span><span class="opt">任意</span></td><td class="ptype">CellAddress | null</td><td>現在ヒット。変化でスクロールする。</td></tr>
+                        <tr>
+                            <td><span class="pname">readOnly</span><span class="opt">任意</span></td>
+                            <td class="ptype">boolean</td>
+                            <td>編集 UI を無効化（コピー・選択・ナビは可）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">sort</span><span class="opt">任意</span></td>
+                            <td class="ptype">SortSpec[]</td>
+                            <td>多列ソート（controlled）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">filters</span><span class="opt">任意</span></td>
+                            <td class="ptype">FilterSpec[]</td>
+                            <td>フィルタ（controlled・条件 UI はホスト所有）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">search</span><span class="opt">任意</span></td>
+                            <td class="ptype">string</td>
+                            <td>検索キーワード。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">searchHighlights</span><span class="opt">任意</span></td>
+                            <td class="ptype">CellAddress[]</td>
+                            <td>ハイライト対象セル。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">currentSearchHit</span><span class="opt">任意</span></td>
+                            <td class="ptype">CellAddress | null</td>
+                            <td>現在ヒット。変化でスクロールする。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -446,13 +699,39 @@ export function App() {
                 <h3>状態 UI・拡張</h3>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">renderLoading</span><span class="opt">任意</span></td><td class="ptype">() =&gt; ReactNode</td><td>ローディング表示の差し替え。</td></tr>
-                            <tr><td><span class="pname">renderEmpty</span><span class="opt">任意</span></td><td class="ptype">() =&gt; ReactNode</td><td>空表示の差し替え。</td></tr>
-                            <tr><td><span class="pname">labels</span><span class="opt">任意</span></td><td class="ptype">Partial&lt;VoxLabels&gt;</td><td>内蔵 UI 文言の上書き（i18n）。</td></tr>
-                            <tr><td><span class="pname">icons</span><span class="opt">任意</span></td><td class="ptype">Icons</td><td>アイコンの差し替え。</td></tr>
-                            <tr><td><span class="pname">platform</span><span class="opt">任意</span></td><td class="ptype">PlatformAdapter</td><td>クリップボード/通知/確認/保存の実装注入。</td></tr>
+                        <tr>
+                            <td><span class="pname">renderLoading</span><span class="opt">任意</span></td>
+                            <td class="ptype">() =&gt; ReactNode</td>
+                            <td>ローディング表示の差し替え。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">renderEmpty</span><span class="opt">任意</span></td>
+                            <td class="ptype">() =&gt; ReactNode</td>
+                            <td>空表示の差し替え。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">labels</span><span class="opt">任意</span></td>
+                            <td class="ptype">Partial&lt;VoxLabels&gt;</td>
+                            <td>内蔵 UI 文言の上書き（i18n）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">icons</span><span class="opt">任意</span></td>
+                            <td class="ptype">Icons</td>
+                            <td>アイコンの差し替え。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">platform</span><span class="opt">任意</span></td>
+                            <td class="ptype">PlatformAdapter</td>
+                            <td>クリップボード/通知/確認/保存の実装注入。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -460,26 +739,102 @@ export function App() {
 
             <section id="props-events">
                 <h3>イベント（コールバック）</h3>
-                <p>ボタンや操作系の affordance は、<strong>対応するコールバックが未指定だと非表示・無効</strong>になります。</p>
+                <p>ボタンや操作系の affordance は、<strong>対応するコールバックが未指定だと非表示・無効</strong>になります。
+                </p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>プロパティ</th><th>型</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>プロパティ</th>
+                            <th>型</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">onSortChange</span></td><td class="ptype">(sort: SortSpec[]) =&gt; void</td><td>none→asc→desc をグリッドがトグルし通知。未指定でソートボタン非表示。</td></tr>
-                            <tr><td><span class="pname">onFilterButtonClick</span></td><td class="ptype">(col: number, anchor: DOMRect) =&gt; void</td><td>フィルタ操作要求（ホストがポップオーバー表示）。未指定でフィルタボタン非表示。</td></tr>
-                            <tr><td><span class="pname">onColumnResize</span></td><td class="ptype">(col: number, width: number) =&gt; void</td><td>列幅変更（ドラッグ／ダブルクリック自動フィット）。</td></tr>
-                            <tr><td><span class="pname">onColumnRename</span></td><td class="ptype">(col: number, newName: string) =&gt; void</td><td>ヘッダ名編集。未指定でリネーム無効。</td></tr>
-                            <tr><td><span class="pname">onAddColumn</span></td><td class="ptype">(atCol: number) =&gt; void</td><td>列追加要求。未指定で追加ボタン非表示。</td></tr>
-                            <tr><td><span class="pname">onCellChange</span></td><td class="ptype">(edit: CellEdit) =&gt; void</td><td>ローカル編集の都度。</td></tr>
-                            <tr><td><span class="pname">onDirtyChange</span></td><td class="ptype">(hasChanges: boolean) =&gt; void</td><td>未コミット変更の有無。</td></tr>
-                            <tr><td><span class="pname">onAppendRow</span></td><td class="ptype">(atRow: number) =&gt; void</td><td>行追加（最下行 Enter／末尾）。</td></tr>
-                            <tr><td><span class="pname">onInsertRow</span></td><td class="ptype">(atRow: number, pos: "above" | "below") =&gt; void</td><td>行挿入要求。</td></tr>
-                            <tr><td><span class="pname">onDeleteRows</span></td><td class="ptype">(rows: number[]) =&gt; void</td><td>行削除要求。</td></tr>
-                            <tr><td><span class="pname">onAutoFill</span></td><td class="ptype">(p: { sourceRange; direction; toEnd }) =&gt; void</td><td>フィルハンドルのドラッグ／ダブルクリック。</td></tr>
-                            <tr><td><span class="pname">onSelectionChange</span></td><td class="ptype">(selection: Selection[]) =&gt; void</td><td>選択変更。</td></tr>
-                            <tr><td><span class="pname">onSelectionStats</span></td><td class="ptype">(stats: SelectionStats | null) =&gt; void</td><td>選択集計（合計／平均／件数）。</td></tr>
-                            <tr><td><span class="pname">onCellKeyDown</span></td><td class="ptype">(e, ctx: CellContext) =&gt; void</td><td>既定キー処理前にフック（<code>preventDefault</code> で抑止）。</td></tr>
-                            <tr><td><span class="pname">onError</span></td><td class="ptype">(err, ctx: { phase: "fetch" | "commit" }) =&gt; void</td><td>取得／コミット失敗。</td></tr>
+                        <tr>
+                            <td><span class="pname">onSortChange</span></td>
+                            <td class="ptype">(sort: SortSpec[]) =&gt; void</td>
+                            <td>none→asc→desc をグリッドがトグルし通知。<code>Column.sortModes</code> 指定時は選択方式を
+                                <code>SortSpec.mode</code> に載せる。未指定でソートボタン非表示。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onFilterButtonClick</span></td>
+                            <td class="ptype">(col: number, anchor: DOMRect) =&gt; void</td>
+                            <td>フィルタ操作要求（ホストがポップオーバー表示）。未指定でフィルタボタン非表示。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onColumnResize</span></td>
+                            <td class="ptype">(col: number, width: number) =&gt; void</td>
+                            <td>列幅変更（ドラッグ／ダブルクリック自動フィット）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onColumnRename</span></td>
+                            <td class="ptype">(col: number, newName: string) =&gt; void</td>
+                            <td>ヘッダ名編集。未指定でリネーム無効。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onColumnReorder</span></td>
+                            <td class="ptype">(from: number, to: number) =&gt; void</td>
+                            <td>ヘッダのドラッグで列を並べ替え（挿入インジケータ表示）。未指定でドラッグ無効。列順はホストが
+                                <code>columns</code> で反映（controlled）。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onAddColumn</span></td>
+                            <td class="ptype">(atCol: number) =&gt; void</td>
+                            <td>列追加要求。未指定で追加ボタン非表示。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onCellChange</span></td>
+                            <td class="ptype">(edit: CellEdit) =&gt; void</td>
+                            <td>ローカル編集の都度。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onDirtyChange</span></td>
+                            <td class="ptype">(hasChanges: boolean) =&gt; void</td>
+                            <td>未コミット変更の有無。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onAppendRow</span></td>
+                            <td class="ptype">(atRow: number) =&gt; void</td>
+                            <td>行追加（最下行 Enter／末尾）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onInsertRow</span></td>
+                            <td class="ptype">(atRow: number, pos: "above" | "below") =&gt; void</td>
+                            <td>行挿入要求。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onDeleteRows</span></td>
+                            <td class="ptype">(rows: number[]) =&gt; void</td>
+                            <td>行削除要求。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onAutoFill</span></td>
+                            <td class="ptype">(p: { sourceRange; direction; toEnd }) =&gt; void</td>
+                            <td>フィルハンドルのドラッグ／ダブルクリック。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onSelectionChange</span></td>
+                            <td class="ptype">(selection: Selection[]) =&gt; void</td>
+                            <td>選択変更。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onSelectionStats</span></td>
+                            <td class="ptype">(stats: SelectionStats | null) =&gt; void</td>
+                            <td>選択集計（合計／平均／件数）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onCellKeyDown</span></td>
+                            <td class="ptype">(e, ctx: CellContext) =&gt; void</td>
+                            <td>既定キー処理前にフック（<code>preventDefault</code> で抑止）。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">onError</span></td>
+                            <td class="ptype">(err, ctx: { phase: "fetch" | "commit" }) =&gt; void</td>
+                            <td>取得／コミット失敗。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -487,27 +842,50 @@ export function App() {
 
             <section id="sorting">
                 <h2>ソート</h2>
-                <p>ソートは controlled です。グリッドはヘッダクリックで <code>none → asc → desc</code> をトグルし <code>onSortChange</code> で通知、ホストが <code>sort</code> を更新します。配列の順序が多列ソートの優先順位です。</p>
+                <p>ソートは controlled です。グリッドはヘッダクリックで <code>none → asc → desc</code> をトグルし <code>onSortChange</code>
+                    で通知、ホストが <code>sort</code> を更新します。配列の順序が多列ソートの優先順位です。</p>
                 <pre data-lang="tsx"><code>const [sort, setSort] = useState&lt;SortSpec[]&gt;([])
 
 &lt;VoxSheet columns={columns} totalRows={total} fetchRows={fetchRows}
     sort={sort} onSortChange={setSort} /&gt;</code></pre>
+                <h3>並べ替え方式（sortModes）</h3>
+                <p>
+                    同じ列でも「テキストとして」か「数値として」かで並べ替え結果が変わる場合があります。<code>Column.sortModes</code>
+                    を指定するとヘッダに小さな <code>▾</code> ピッカーが出て、選んだ方式 id が <code>SortSpec.mode</code>
+                    に載ります。<strong>実際の比較はバックエンドが解釈</strong>します（グリッドは id を運ぶだけでトランスポート非依存）。<code>sortModes</code>
+                    未指定の列は従来どおりで <code>mode</code> を送らないため、既定はバックエンドの素の（テキスト）並べ替えになります。
+                </p>
+                <pre data-lang="tsx"><code>const columns: Column[] = [
+    { name: "code", sortModes: [
+        { id: "text", label: "テキスト" },
+        { id: "numeric", label: "数値" },
+    ], defaultSortMode: "text" },
+]
+// fetchRows には例えば { column: "code", direction: "asc", mode: "numeric" } が渡る
+// → サーバ側で mode を ORDER BY に変換する。</code></pre>
             </section>
 
             <section id="filtering">
                 <h2>フィルタ</h2>
-                <p>フィルタ条件 UI は<strong>ホストが所有</strong>します。グリッドは <code>onFilterButtonClick(col, anchorRect)</code> で「この列のフィルタを編集したい」と通知するので、ホストはその <code>anchorRect</code> 付近にポップオーバーを出し、確定後 <code>filters</code> を更新します。フィルタは AND 結合です。</p>
+                <p>フィルタ条件 UI は<strong>ホストが所有</strong>します。グリッドは <code>onFilterButtonClick(col,
+                    anchorRect)</code> で「この列のフィルタを編集したい」と通知するので、ホストはその
+                    <code>anchorRect</code> 付近にポップオーバーを出し、確定後 <code>filters</code> を更新します。フィルタは
+                    AND 結合です。</p>
                 <pre data-lang="ts"><code>type FilterOperator =
     | "=" | "!=" | "&gt;" | "&gt;=" | "&lt;" | "&lt;="
     | "contains" | "startsWith" | "endsWith"
     | "isNull" | "notNull"
 
 type FilterSpec = { column: string; operator: FilterOperator; value?: CellValue }</code></pre>
+                <p>ある列に<strong>2 件以上のフィルタ</strong>が適用されているとき、ヘッダのフィルタボタンに件数バッジが表示され、複数条件を一目で把握できます。
+                </p>
             </section>
 
             <section id="search">
                 <h2>検索</h2>
-                <p><code>search</code> にキーワードを渡すと <code>fetchRows</code> の <code>Query.search</code> に反映されます。ヒット箇所のハイライトとスクロールはホストが <code>searchHighlights</code> / <code>currentSearchHit</code> で制御します。</p>
+                <p><code>search</code> にキーワードを渡すと <code>fetchRows</code> の <code>Query.search</code>
+                    に反映されます。ヒット箇所のハイライトとスクロールはホストが <code>searchHighlights</code> / <code>currentSearchHit</code>
+                    で制御します。</p>
                 <pre data-lang="tsx"><code>&lt;VoxSheet ...
     search={keyword}
     searchHighlights={hits}
@@ -517,7 +895,10 @@ type FilterSpec = { column: string; operator: FilterOperator; value?: CellValue 
 
             <section id="editing">
                 <h2>編集とコミット</h2>
-                <p>編集はまず<strong>ローカル層</strong>に溜まります（ダーティ表示、<code>onCellChange</code> / <code>onDirtyChange</code> 通知）。ホストは任意のタイミングで <code>getLocalEdits()</code> を読み、各 <code>row</code> を <code>fetchRows</code> で受け取った <code>ids</code> で安定 ID に解決し、永続化後に <code>clearLocalEdits()</code> を呼びます。</p>
+                <p>編集はまず<strong>ローカル層</strong>に溜まります（ダーティ表示、<code>onCellChange</code> / <code>onDirtyChange</code>
+                    通知）。ホストは任意のタイミングで <code>getLocalEdits()</code> を読み、各 <code>row</code> を <code>fetchRows</code>
+                    で受け取った <code>ids</code> で安定 ID に解決し、永続化後に <code>clearLocalEdits()</code> を呼びます。
+                </p>
                 <pre data-lang="tsx"><code>const ref = useRef&lt;VoxSheetHandle&gt;(null)
 
 async function save() {
@@ -533,7 +914,9 @@ async function save() {
 
             <section id="selection">
                 <h2>選択と集計</h2>
-                <p>選択は Excel 風の矩形レンジの配列です。<code>onSelectionChange</code> で選択範囲、<code>onSelectionStats</code> で件数・数値件数・合計・平均が得られます（数値が無い場合 <code>sum</code> / <code>average</code> は <code>null</code>）。</p>
+                <p>選択は Excel 風の矩形レンジの配列です。<code>onSelectionChange</code> で選択範囲、<code>onSelectionStats</code>
+                    で件数・数値件数・合計・平均が得られます（数値が無い場合 <code>sum</code> / <code>average</code> は
+                    <code>null</code>）。</p>
                 <pre data-lang="ts"><code>type CellAddress = { row: number; col: number }
 type Selection = { start: CellAddress; end: CellAddress }
 type SelectionStats = {
@@ -546,7 +929,8 @@ type SelectionStats = {
 
             <section id="autofill">
                 <h2>オートフィル</h2>
-                <p>選択範囲右下のフィルハンドルをドラッグ／ダブルクリックすると <code>onAutoFill</code> が呼ばれます。実際の値生成ロジックはホストが担います。</p>
+                <p>選択範囲右下のフィルハンドルをドラッグ／ダブルクリックすると <code>onAutoFill</code>
+                    が呼ばれます。実際の値生成ロジックはホストが担います。</p>
                 <pre data-lang="ts"><code>onAutoFill={(p) =&gt; {
     // p.sourceRange: 元の選択, p.direction: "down"|"up"|"left"|"right"
     // p.toEnd: ダブルクリックで列末尾まで
@@ -557,39 +941,144 @@ type SelectionStats = {
                 <h2>キーボード操作</h2>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>キー</th><th>動作</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>キー</th>
+                            <th>動作</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> / <kbd>Tab</kbd> / <kbd>Enter</kbd></td><td>セル移動</td></tr>
-                            <tr><td><kbd>Home</kbd> <kbd>End</kbd> / <kbd>PageUp</kbd> <kbd>PageDown</kbd></td><td>行頭・行末 / ページ単位移動</td></tr>
-                            <tr><td><kbd>Ctrl</kbd>+<kbd>Home</kbd> / <kbd>Ctrl</kbd>+<kbd>End</kbd></td><td>表の先頭・末尾へ</td></tr>
-                            <tr><td><kbd>F2</kbd> / 直接入力 / <kbd>Delete</kbd></td><td>編集開始 / 上書き入力 / クリア</td></tr>
-                            <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd>/<kbd>C</kbd>/<kbd>X</kbd>/<kbd>V</kbd></td><td>全選択 / コピー / カット / 貼り付け</td></tr>
-                            <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Undo / Redo</td></tr>
-                            <tr><td><kbd>Shift</kbd>+矢印 / <kbd>Shift</kbd>+クリック</td><td>選択範囲を拡張</td></tr>
-                            <tr><td><kbd>Ctrl</kbd>+クリック</td><td>複数レンジ選択</td></tr>
+                        <tr>
+                            <td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> / <kbd>Tab</kbd> / <kbd>Enter</kbd>
+                            </td>
+                            <td>セル移動</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Home</kbd> <kbd>End</kbd> / <kbd>PageUp</kbd> <kbd>PageDown</kbd></td>
+                            <td>行頭・行末 / ページ単位移動</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Ctrl</kbd>+<kbd>Home</kbd> / <kbd>Ctrl</kbd>+<kbd>End</kbd></td>
+                            <td>表の先頭・末尾へ</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>F2</kbd> / 直接入力 / <kbd>Delete</kbd></td>
+                            <td>編集開始 / 上書き入力 / クリア</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Ctrl</kbd>+<kbd>A</kbd>/<kbd>C</kbd>/<kbd>X</kbd>/<kbd>V</kbd></td>
+                            <td>全選択 / コピー / カット / 貼り付け</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+                            <td>Undo / Redo</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Shift</kbd>+矢印 / <kbd>Shift</kbd>+クリック</td>
+                            <td>選択範囲を拡張</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>Ctrl</kbd>+クリック</td>
+                            <td>複数レンジ選択</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
-                <p>IME は <code>compositionend</code> で確定されます。<code>readOnly</code> 時はコピー・全選択・ナビゲーションのみ有効です。</p>
+                <p>IME は <code>compositionend</code> で確定されます。<code>readOnly</code> 時はコピー・全選択・ナビゲーションのみ有効です。
+                </p>
+            </section>
+
+            <section id="frozen-rows">
+                <h2>行の固定</h2>
+                <p><code>frozenRows</code> を指定すると、先頭 N
+                    行を本体スクロールの外側に置いた固定バンドに描画します。バンドはその場に留まり、残りのグリッドだけが縦スクロールします。横スクロールのみバンドに同期するため、固定セルは対応する列と揃ったままになります。本体スクロール領域は
+                    <code>[frozenRows, total)</code> の行を担当するので、固定行が二重に表示されることはありません。</p>
+                <p>固定行は通常の行と同じように選択・編集でき、それらを含む先頭側のチャンクはスクロール位置に依らず常に取得されます。既定値
+                    <code>0</code> で固定は無効です。列を固定する場合は<a href="#frozen-columns">列の固定</a>を参照してください。
+                </p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet columns={columns} totalRows={total} fetchRows={fetchRows} frozenRows={2} /&gt;</code></pre>
+            </section>
+
+            <section id="frozen-columns">
+                <h2>列の固定</h2>
+                <p><code>frozenColumns</code> を指定すると、先頭 N 列を左に固定します。残りのグリッドを横スクロールしても常に見えたままになり（sticky
+                    で実装）、列幅や行高は本体とずれません。<code>frozenRows</code> と組み合わせると、左上の交差部分が縦横どちらのスクロールでも固定されます。
+                </p>
+                <p>既定値 <code>0</code> で固定は無効です。</p>
+                <pre data-lang="tsx"><code>&lt;VoxSheet columns={columns} totalRows={total} fetchRows={fetchRows} frozenColumns={1} /&gt;</code></pre>
+            </section>
+
+            <section id="reorder">
+                <h2>列の並べ替え</h2>
+                <p><code>onColumnReorder</code> を指定すると、列ヘッダをドラッグして並べ替えられます。ドラッグ中は挿入位置のインジケータが出て、ドロップで
+                    <code>onColumnReorder(from, to)</code> が発火します。列順は<strong>ホストが所有</strong>します（<code>columns</code>
+                    配列を並べ替えて反映）。</p>
+                <p>データは位置ベース（<code>data[i][j]</code> は <code>columns</code> 対応）のため、並べ替え後は <code>fetchRows</code>
+                    が各行のセルを<strong>現在の列順</strong>で返すようにしてください（バックエンドがその順で返す、またはクライアントで並べ替える）。
+                </p>
+                <pre data-lang="tsx"><code>onColumnReorder={(from, to) =&gt; {
+    setColumns((cols) =&gt; {
+        const next = [...cols]
+        const [moved] = next.splice(from, 1)
+        next.splice(to, 0, moved)
+        return next
+    })
+}}</code></pre>
             </section>
 
             <section id="handle">
                 <h2>命令的ハンドル（ref）</h2>
-                <p><code>ref</code> 経由で <code>VoxSheetHandle</code> を取得し、スクロール・選択・編集・Undo などを命令的に操作できます。</p>
+                <p><code>ref</code> 経由で <code>VoxSheetHandle</code> を取得し、スクロール・選択・編集・Undo
+                    などを命令的に操作できます。</p>
                 <div class="table-wrap">
                     <table class="param-table">
-                        <thead><tr><th>メソッド</th><th>説明</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>メソッド</th>
+                            <th>説明</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr><td><span class="pname">scrollToRow(row)</span></td><td>指定行までスクロール。</td></tr>
-                            <tr><td><span class="pname">scrollToCell(row, col)</span></td><td>指定セルまでスクロール。</td></tr>
-                            <tr><td><span class="pname">focusCell(row, col)</span></td><td>指定セルにフォーカス。</td></tr>
-                            <tr><td><span class="pname">getSelection()</span></td><td>現在の選択（<code>Selection[]</code>）を取得。</td></tr>
-                            <tr><td><span class="pname">setSelection(sel)</span></td><td>選択を設定。</td></tr>
-                            <tr><td><span class="pname">startEdit(row, col)</span></td><td>指定セルの編集を開始。</td></tr>
-                            <tr><td><span class="pname">getLocalEdits()</span></td><td>未コミット編集（<code>CellEdit[]</code>）を取り出す。</td></tr>
-                            <tr><td><span class="pname">clearLocalEdits()</span></td><td>コミット後にローカル編集と Undo/Redo をクリア。</td></tr>
-                            <tr><td><span class="pname">undo()</span> / <span class="pname">redo()</span></td><td>元に戻す / やり直す。</td></tr>
-                            <tr><td><span class="pname">invalidate()</span></td><td>キャッシュ破棄＋再取得（明示リフレッシュ）。</td></tr>
+                        <tr>
+                            <td><span class="pname">scrollToRow(row)</span></td>
+                            <td>指定行までスクロール。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">scrollToCell(row, col)</span></td>
+                            <td>指定セルまでスクロール。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">focusCell(row, col)</span></td>
+                            <td>指定セルにフォーカス。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">getSelection()</span></td>
+                            <td>現在の選択（<code>Selection[]</code>）を取得。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">setSelection(sel)</span></td>
+                            <td>選択を設定。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">startEdit(row, col)</span></td>
+                            <td>指定セルの編集を開始。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">getLocalEdits()</span></td>
+                            <td>未コミット編集（<code>CellEdit[]</code>）を取り出す。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">clearLocalEdits()</span></td>
+                            <td>コミット後にローカル編集と Undo/Redo をクリア。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">undo()</span> / <span class="pname">redo()</span></td>
+                            <td>元に戻す / やり直す。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pname">invalidate()</span></td>
+                            <td>キャッシュ破棄＋再取得（明示リフレッシュ）。</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -597,15 +1086,26 @@ type SelectionStats = {
 
             <section id="styling">
                 <h2>スタイリング・テーマ</h2>
-                <p>スタイルは <code>vox-</code> クラスと <code>--vox-*</code> CSS 変数で自己完結しています。<code>@lembryo/voxsheet/styles.css</code> を読み込み、変数やクラスを上書きしてテーマ調整します。ダークモードは <code>prefers-color-scheme</code> に追従し、<code>theme</code> prop で強制もできます。</p>
-                <pre data-lang="css"><code>:root {
+                <p>スタイルは <code>vox-</code> クラスと <code>--vox-*</code> CSS 変数で自己完結しています。<code>@lembryo/voxsheet/styles.css</code>
+                    を読み込み、変数やクラスを上書きしてテーマ調整します。ダークモードは <code>prefers-color-scheme</code>
+                    に追従し、<code>theme</code> prop で強制もできます。</p>
+                <pre data-lang="css"><code>.vox-sheet {
     --vox-row-height: 32px;
     --vox-color-accent: #06c755;
 }</code></pre>
+                <div class="note warn">
+                    <div class="note-title">変数の上書き場所に注意</div>
+                    <code>--vox-*</code> 変数は <code>:root</code> ではなく <code>.vox-sheet</code> ルートに定義されています。<code>:root</code>
+                    で上書きしても効きません。上書きは <code>.vox-sheet</code>（またはラッパークラス）にスコープしてください（上の例）。
+                </div>
                 <ul class="bullets">
-                    <li><code>density</code> で行高とフォントをまとめて切替（<code>compact</code> / <code>normal</code> / <code>comfortable</code>）。</li>
+                    <li><code>density</code> で行高とフォントをまとめて切替（<code>compact</code> / <code>normal</code> /
+                        <code>comfortable</code>）。
+                    </li>
                     <li><code>rowHeight</code> は <code>density</code> より優先。</li>
-                    <li><code>theme</code> は <code>data-vox-theme</code> 属性を設定（<code>light</code> / <code>dark</code> / <code>system</code>）。</li>
+                    <li><code>theme</code> は <code>data-vox-theme</code> 属性を設定（<code>light</code> /
+                        <code>dark</code> / <code>system</code>）。
+                    </li>
                 </ul>
             </section>
 
@@ -631,12 +1131,14 @@ type SelectionStats = {
         filter: ({ size }) =&gt; &lt;MyFilterIcon width={size} /&gt;,
     }}
 /&gt;</code></pre>
-                <p>差し替え可能なキー: <code>sortAscending</code> / <code>sortDescending</code> / <code>sortUnsorted</code> / <code>filter</code> / <code>filterActive</code>。</p>
+                <p>差し替え可能なキー: <code>sortAscending</code> / <code>sortDescending</code> /
+                    <code>sortUnsorted</code> / <code>filter</code> / <code>filterActive</code>。</p>
             </section>
 
             <section id="platform">
                 <h2>プラットフォームアダプタ</h2>
-                <p>クリップボード・トースト通知・確認ダイアログ・ファイル保存の実装を注入できます。未指定時はブラウザ標準の挙動にフォールバックします。</p>
+                <p>
+                    クリップボード・トースト通知・確認ダイアログ・ファイル保存の実装を注入できます。未指定時はブラウザ標準の挙動にフォールバックします。</p>
                 <pre data-lang="tsx"><code>&lt;VoxSheet ...
     platform={{
         notify: (kind, message) =&gt; { showToast(kind, message); return id },
@@ -657,7 +1159,8 @@ type ColumnType = "string" | "number" | "date" | "boolean"
 type ColumnAlign = "left" | "right" | "center"
 
 type SortDirection = "asc" | "desc"
-type SortSpec = { column: string; direction: SortDirection }
+type SortMode = { id: string; label: string }
+type SortSpec = { column: string; direction: SortDirection; mode?: string }
 
 type FilterOperator =
     | "=" | "!=" | "&gt;" | "&gt;=" | "&lt;" | "&lt;="
@@ -681,6 +1184,7 @@ type VoxLabels = {
     contextCut: string; contextCopy: string; contextPaste: string
     contextInsertRowAbove: string; contextInsertRowBelow: string
     contextDeleteRows: string; contextUndo: string; contextRedo: string
+    sortOptions: string; sortClear: string
     confirmLargeCopyTitle: string; confirmLargeCopyMessage: string
     confirmOk: string; confirmCancel: string
 }
@@ -710,10 +1214,12 @@ type PlatformAdapter = {
             <section id="limitations">
                 <h2>制限事項</h2>
                 <div class="note warn">
-                    <div class="note-title">現バージョン（v1.0.0）の未対応</div>
+                    <div class="note-title">現時点で未対応</div>
                     <ul class="bullets" style="margin-bottom:0">
-                        <li><code>frozenRows</code> — prop は受け付けますが、固定行の描画は未実装です。</li>
-                        <li><code>frozenColumns</code> — v2 で対応予定。</li>
+                        <li>列の仮想化 —
+                            行はウィンドウ化しますが全列を描画します。列数の多い横長テーブルでは列数を穏当に保ってください。
+                        </li>
+                        <li>RTL レイアウト（<code>dir</code> prop）は対応予定です。</li>
                     </ul>
                 </div>
                 <p>コールバック未指定のヘッダボタンは非表示になります（仕様）。</p>
@@ -721,8 +1227,8 @@ type PlatformAdapter = {
 
             <p style="margin-top:48px;color:var(--text-faint);font-size:13px;border-top:1px solid var(--border);padding-top:20px">
                 @lembryo/voxsheet · MIT License ·
-                <a href="https://www.npmjs.com/package/@lembryo/voxsheet" target="_blank" rel="noopener">npm</a> ·
-                <a href="https://github.com/lembryo/voxsheet" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.npmjs.com/package/@lembryo/voxsheet" rel="noopener" target="_blank">npm</a> ·
+                <a href="https://github.com/lembryo/voxsheet" rel="noopener" target="_blank">GitHub</a>
             </p>
         </div>
     </main>

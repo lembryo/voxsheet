@@ -118,6 +118,20 @@
     overflow: hidden;
 }
 
+/* 固定列（ヘッダ）: sticky-left。背景でスクロールする列を隠す（sticky 位置は JS で付与）。 */
+.vox-header-cell--frozen-col {
+    background: var(--vox-color-header-bg);
+}
+
+/* 列ドラッグ中の見た目とドロップ位置インジケータ（左端に挿入線）。 */
+.vox-header-cell--dragging {
+    opacity: 0.5;
+}
+
+.vox-header-cell--drop {
+    box-shadow: inset 2px 0 0 0 var(--vox-color-accent);
+}
+
 .vox-header-label {
     flex: 1 1 auto;
     overflow: hidden;
@@ -147,6 +161,13 @@
 .vox-header-btn:hover {
     background: var(--vox-color-selection-bg);
     color: var(--vox-color-fg);
+}
+
+/* 並べ替え方式ピッカー（▾）。sort ボタンの隣に小さく添える。 */
+.vox-sort-mode-btn {
+    font-size: 10px;
+    line-height: 1;
+    padding: 2px 1px;
 }
 
 .vox-add-column {
@@ -250,6 +271,12 @@
     text-overflow: ellipsis;
     cursor: cell;
     user-select: none;
+}
+
+/* 固定列（本体）: sticky-left（位置は JS で付与）。背景でスクロールする列を隠す。
+   選択/dirty/検索の状態クラスはこの後に定義されるため、それらが背景を上書きする。 */
+.vox-cell--frozen-col {
+    background: var(--vox-color-bg);
 }
 
 .vox-cell--selected {
@@ -376,7 +403,13 @@
     padding: 10px 14px;
     border-radius: 6px;
     color: #fff;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
     font-size: 13px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
@@ -416,7 +449,13 @@
     color: #1f2328;
     border-radius: 8px;
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
 }
 
 .vox-modal-title {

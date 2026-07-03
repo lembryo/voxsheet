@@ -46,8 +46,12 @@ export const useChunks = (params: Params) => {
     const pendingRef = useRef<Set<number>>(new Set())
     const controllersRef = useRef<Set<AbortController>>(new Set())
     const [rows, setRows] = useState<Map<number, VisibleRow>>(new Map())
-    const [total, setTotal] = useState(totalRows)
+    // レスポンス（FetchResult.total）由来の総数。null = まだレスポンス無し（この間は totalRows prop を使う）。
+    // 「未確定」と「本当に 0 件」を区別するため number|null にする（0 を prop へフォールバックさせない）。
+    const [respTotal, setRespTotal] = useState<number | null>(null)
     const [status, setStatus] = useState<ChunkStatus>("idle")
+    // 現在の実効総数（レスポンス優先・D26。無ければ prop）。
+    const total = respTotal ?? totalRows
 
     // 無効化キー（controlled なドメイン状態に依存）
     const invalidationKey = JSON.stringify({
@@ -63,6 +67,8 @@ export const useChunks = (params: Params) => {
         cacheRef.current.clear()
         pendingRef.current.clear()
         setRows(new Map())
+        // 新しいクエリの総数は次のレスポンスで確定させる（古い件数を引きずらない）。
+        setRespTotal(null)
     }, [])
 
     // 無効化（controlled 状態 / queryKey の変化）
@@ -79,16 +85,23 @@ export const useChunks = (params: Params) => {
     }, [])
 
     const loadChunks = useCallback(async () => {
-        const effectiveTotal = total > 0 ? total : totalRows
+        const effectiveTotal = respTotal ?? totalRows
         const offsets: number[] = []
-        if (frozenRows > 0) offsets.push(0)
+        // 固定行（先頭 frozenRows 行）は常にビューポート外へ描画するため、スクロール位置に
+        // 依らず先頭側のチャンクを取得しておく。frozenRows が 1 チャンクを跨ぐ場合も網羅する。
+        if (frozenRows > 0) {
+            const frozenTo = Math.ceil(Math.min(frozenRows, effectiveTotal) / CHUNK) * CHUNK
+            for (let o = 0; o < frozenTo; o += CHUNK) offsets.push(o)
+        }
         const from = Math.floor(startRow / CHUNK) * CHUNK
         const to = Math.ceil(endRow / CHUNK) * CHUNK
         for (let o = from; o < to; o += CHUNK) {
             if (o >= 0) offsets.push(o)
         }
 
-        const targets = offsets.filter(
+        // 固定行側とビューポート側でチャンクが重なりうる（例: 先頭付近）。重複取得を避けるため
+        // 一意化してからフィルタする。
+        const targets = [...new Set(offsets)].filter(
             (o) => o < effectiveTotal && !cacheRef.current.has(o) && !pendingRef.current.has(o),
         )
         if (targets.length === 0) return
@@ -115,7 +128,7 @@ export const useChunks = (params: Params) => {
                     ordinal: result.ordinals[i] ?? offset + i + 1,
                 }))
                 cacheRef.current.set(offset, chunk)
-                if (typeof result.total === "number") setTotal(result.total)
+                if (typeof result.total === "number") setRespTotal(result.total)
             } catch (error) {
                 if (!controller.signal.aborted) {
                     onError?.(error, { phase: "fetch" })
@@ -138,7 +151,7 @@ export const useChunks = (params: Params) => {
         startRow,
         endRow,
         frozenRows,
-        total,
+        respTotal,
         totalRows,
         onError,
         rebuildVisible,
@@ -152,15 +165,13 @@ export const useChunks = (params: Params) => {
         return () => clearTimeout(timer)
     }, [loadChunks])
 
-    // totalRows prop の変化を反映（フィルタ解除等）
-    useEffect(() => {
-        setTotal(totalRows)
-    }, [totalRows])
+    // total は respTotal ?? totalRows の派生値なので、totalRows prop の変化（フィルタ解除等）は
+    // 自動で反映される（専用の同期 effect は不要）。
 
     const invalidate = useCallback(() => {
         reset()
         void loadChunks()
     }, [reset, loadChunks])
 
-    return { rows, total: total > 0 ? total : totalRows, status, invalidate }
+    return { rows, total, status, invalidate }
 }

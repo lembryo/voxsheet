@@ -59,6 +59,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         density = "normal",
         defaultColumnWidth = 120,
         frozenRows = 0,
+        frozenColumns = 0,
         theme = "system",
         className,
         style,
@@ -78,6 +79,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         onColumnResize,
         onColumnRename,
         onAddColumn,
+        onColumnReorder,
         onCellChange,
         onDirtyChange,
         onAppendRow,
@@ -172,14 +174,17 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     }, [])
 
     // --- 可視範囲 ---
-    // frozenRows（先頭行の固定表示）は現状未対応。prop は受け付けるが描画には反映しない
-    // （チャンク取得側へはヒントとして渡す）。固定バンドの描画は今後の実装。
-    const bodyOffset = 0
-    // ビューポートから必要な行範囲（＋オーバースキャンの余裕）を算出する。
+    // frozenRows（先頭 N 行の固定表示）: 先頭 N 行を本体スクロール外の「固定バンド」に描画し、
+    // 本体はそれ以降の行 [frozenRows, total) だけをスクロール領域として扱う。
+    // そのため行位置と取得範囲を bodyOffset（＝frozenRows）だけずらす。横スクロールのみ
+    // バンドへ同期する（handleScroll で frozenRef.scrollLeft を追従）。
+    const bodyOffset = Math.max(0, frozenRows)
+    // ビューポートから必要な行範囲（＋オーバースキャンの余裕）を算出する。scrollTop=0 は
+    // 本体先頭（＝行 bodyOffset）に対応するため、絶対行番号へ戻すよう bodyOffset を足す。
     // 総数が未確定でもまず取得できるよう、ここでは totalRows でクランプしない。
     // 実際の描画範囲は取得後に判明する total でクランプする（下の visibleEnd）。
-    const desiredStart = Math.max(0, Math.floor(scrollTop / rowHeight) - OVERSCAN)
-    const desiredEnd = Math.ceil((scrollTop + viewportHeight) / rowHeight) + OVERSCAN
+    const desiredStart = bodyOffset + Math.max(0, Math.floor(scrollTop / rowHeight) - OVERSCAN)
+    const desiredEnd = bodyOffset + Math.ceil((scrollTop + viewportHeight) / rowHeight) + OVERSCAN
 
     // --- データ取得（チャンク） ---
     const { rows, total, status, invalidate } = useChunks({
@@ -196,10 +201,14 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         onError,
     })
 
-    // 描画範囲は「ビューポートの要求」と「判明している総数」の小さい方。
+    // 実際に固定する行数（総数を超えないようクランプ）。total は respTotal ?? totalRows で
+    // 常に確定値のため、0 件なら固定バンドも出さない。
+    const frozenCount = Math.max(0, Math.min(frozenRows, total))
+    // 描画範囲は「ビューポートの要求」と「判明している総数」の小さい方。固定行は本体に出さない
+    // ため下限を bodyOffset にクランプする。
     // total はレスポンスの FetchResult.total で自己更新されるため、ホストが
     // totalRows を更新しなくても初回取得後に正しい行数まで広がる。
-    const visibleStart = Math.min(desiredStart, Math.max(0, total - 1))
+    const visibleStart = Math.min(desiredStart, Math.max(bodyOffset, total - 1))
     const visibleEnd = Math.min(total, desiredEnd)
 
     // --- ローカル編集レイヤー ---
@@ -272,8 +281,15 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     const resizeStartXRef = useRef(0)
     const resizeStartWRef = useRef(0)
 
+    // --- 列ドラッグ並べ替え ---
+    const [dragCol, setDragCol] = useState<number | null>(null)
+    const [dropCol, setDropCol] = useState<number | null>(null)
+
     // --- コンテキストメニュー ---
     const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null)
+
+    // --- 並べ替え方式ピッカー（Column.sortModes 使用時） ---
+    const [sortMenu, setSortMenu] = useState<{ col: number; x: number; y: number } | null>(null)
 
     // --- 編集可否 ---
     const columnEditable = useCallback(
@@ -583,18 +599,62 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         }
     }, [editingHeader])
 
-    // --- ソート（none→asc→desc→なし のトグル） ---
+    // 列 c の「有効な並べ替え方式 id」: 現在のソート指定 > defaultSortMode > 先頭。
+    // sortModes 未指定なら undefined（＝方式なしの従来動作）。
+    const activeSortMode = useCallback(
+        (c: number): string | undefined => {
+            const col = columns[c]
+            if (!col?.sortModes?.length) return undefined
+            const current = sort.find((s) => s.column === col.name)
+            return current?.mode ?? col.defaultSortMode ?? col.sortModes[0]?.id
+        },
+        [columns, sort],
+    )
+
+    // --- ソート（none→asc→desc→なし のトグル。方式ありなら mode を載せる） ---
     const handleSortClick = useCallback(
         (c: number) => {
             const name = columns[c]?.name
             if (!name || !onSortChange) return
+            const mode = activeSortMode(c)
             const current = sort.find((s) => s.column === name)
             let next: SortSpec[]
-            if (!current) next = [...sort, { column: name, direction: "asc" }]
-            else if (current.direction === "asc")
+            if (!current) {
+                const spec: SortSpec = mode
+                    ? { column: name, direction: "asc", mode }
+                    : { column: name, direction: "asc" }
+                next = [...sort, spec]
+            } else if (current.direction === "asc")
                 next = sort.map((s) => (s.column === name ? { ...s, direction: "desc" } : s))
             else next = sort.filter((s) => s.column !== name)
             onSortChange(next)
+        },
+        [columns, onSortChange, sort, activeSortMode],
+    )
+
+    // 方式ピッカーで方式を選ぶ: 現在の direction を保ち（未ソートなら asc）、mode を差し替えて即ソート。
+    const applySortMode = useCallback(
+        (c: number, mode: string) => {
+            const name = columns[c]?.name
+            if (!name || !onSortChange) {
+                setSortMenu(null)
+                return
+            }
+            const current = sort.find((s) => s.column === name)
+            const spec: SortSpec = { column: name, direction: current?.direction ?? "asc", mode }
+            onSortChange(
+                current ? sort.map((s) => (s.column === name ? spec : s)) : [...sort, spec],
+            )
+            setSortMenu(null)
+        },
+        [columns, onSortChange, sort],
+    )
+
+    const clearSortColumn = useCallback(
+        (c: number) => {
+            const name = columns[c]?.name
+            if (name && onSortChange) onSortChange(sort.filter((s) => s.column !== name))
+            setSortMenu(null)
         },
         [columns, onSortChange, sort],
     )
@@ -608,6 +668,45 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         },
         [onFilterButtonClick],
     )
+
+    // --- 列ドラッグ並べ替え（HTML5 DnD。列順の反映はホスト＝controlled） ---
+    const handleColDragStart = useCallback(
+        (c: number, e: React.DragEvent) => {
+            if (!onColumnReorder) return
+            setDragCol(c)
+            e.dataTransfer.effectAllowed = "move"
+            // Firefox は dataTransfer にデータが無いと dragstart しない
+            e.dataTransfer.setData("text/plain", String(c))
+        },
+        [onColumnReorder],
+    )
+    const handleColDragOver = useCallback(
+        (c: number, e: React.DragEvent) => {
+            if (dragCol === null) return
+            e.preventDefault()
+            e.dataTransfer.dropEffect = "move"
+            if (c !== dropCol) setDropCol(c)
+        },
+        [dragCol, dropCol],
+    )
+    const handleColDrop = useCallback(
+        (c: number, e: React.DragEvent) => {
+            e.preventDefault()
+            if (dragCol !== null && dragCol !== c) onColumnReorder?.(dragCol, c)
+            setDragCol(null)
+            setDropCol(null)
+        },
+        [dragCol, onColumnReorder],
+    )
+    const handleColDragEnd = useCallback(() => {
+        setDragCol(null)
+        setDropCol(null)
+        // HTML5 DnD のドロップでは mouseup が発火しないため、ドラッグ選択フラグをここで解除する。
+        // 未解除だと、並べ替え後にヘッダ上をホバーしただけで列選択が広がる不具合になる。
+        isDraggingRef.current = false
+        isRowDraggingRef.current = false
+        isColDraggingRef.current = false
+    }, [])
 
     // --- リサイズ ---
     const handleResizeStart = useCallback(
@@ -852,8 +951,9 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                 else moveActive(r + 1, c, false)
             } else if (e.key === "Home") {
                 e.preventDefault()
-                moveActive(r, mod ? 0 : 0, extend)
+                // Home: 行頭へ。Ctrl+Home はさらに先頭セル(0,0)へ。
                 if (mod) moveActive(0, 0, extend)
+                else moveActive(r, 0, extend)
             } else if (e.key === "End") {
                 e.preventDefault()
                 if (mod) moveActive(total - 1, columns.length - 1, extend)
@@ -964,12 +1064,24 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     const fillRow = selMin ? selMin.r2 : null
     const fillCol = selMin ? selMin.c2 : null
 
+    // 固定列（先頭 N 列を横スクロール時に左へ固定）。sticky-left で実現する。
+    // 本体/固定バンドの行は行ヘッダ込みの座標（colLeft）、ヘッダ列は行ヘッダ分を引いた座標。
+    const frozenCols = Math.max(0, Math.min(frozenColumns, columns.length))
+    const frozenBodyColStyle = (c: number): CSSProperties | undefined =>
+        c < frozenCols ? { position: "sticky", left: colLeft(c), zIndex: 2 } : undefined
+    const frozenHeaderColStyle = (c: number): CSSProperties | undefined =>
+        c < frozenCols
+            ? { position: "sticky", left: colLeft(c) - ROW_HEADER_WIDTH, zIndex: 3 }
+            : undefined
+
     const renderHeaderActions = (c: number): ReactElement | null => {
         if (readOnly || (!onSortChange && !onFilterButtonClick)) return null
         const name = columns[c]?.name ?? ""
+        const sortModes = columns[c]?.sortModes
         const sortIndex = sort.findIndex((s) => s.column === name)
         const sortSpec = sortIndex >= 0 ? sort[sortIndex] : undefined
-        const hasFilter = filters.some((f) => f.column === name)
+        const filterCount = filters.reduce((n, f) => (f.column === name ? n + 1 : n), 0)
+        const hasFilter = filterCount > 0
         const SortIcon = sortSpec
             ? sortSpec.direction === "asc"
                 ? icons.sortAscending
@@ -987,6 +1099,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                         onClick={(e) => handleFilterClick(c, e)}
                     >
                         <FilterIcon size={13} />
+                        {filterCount > 1 && <sup>{filterCount}</sup>}
                     </button>
                 )}
                 {onSortChange && (
@@ -1002,6 +1115,21 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                     >
                         <SortIcon size={13} />
                         {sortSpec && sort.length > 1 && <sup>{sortIndex + 1}</sup>}
+                    </button>
+                )}
+                {onSortChange && sortModes && sortModes.length > 0 && (
+                    <button
+                        type="button"
+                        className="vox-header-btn vox-sort-mode-btn"
+                        title={labels.sortOptions}
+                        aria-label={`${labels.sortOptions}: ${name}`}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                            setSortMenu({ col: c, x: rect.left, y: rect.bottom })
+                        }}
+                    >
+                        ▾
                     </button>
                 )}
             </span>
@@ -1062,6 +1190,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                     const align = col.align ?? defaultAlign(col.type)
                     const cls =
                         "vox-cell" +
+                        (c < frozenCols ? " vox-cell--frozen-col" : "") +
                         (selected ? " vox-cell--selected" : "") +
                         (isActive ? " vox-cell--active" : "") +
                         (dirty ? " vox-cell--dirty" : "") +
@@ -1079,6 +1208,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                                 width: getColWidth(c),
                                 height: rowHeight,
                                 justifyContent: alignToJustify(align),
+                                ...frozenBodyColStyle(c),
                             }}
                             onMouseDown={(e) => handleCellMouseDown(rowIdx, c, e)}
                             onMouseEnter={() => handleCellMouseEnter(rowIdx, c)}
@@ -1115,6 +1245,13 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     for (let r = visibleStart; r < visibleEnd; r++) {
         bodyRows.push(renderRow(r, (r - bodyOffset) * rowHeight))
     }
+
+    // 固定バンドの行（先頭 frozenCount 行をバンド内の自然位置に描画）。
+    const frozenRowEls: ReactElement[] = []
+    for (let r = 0; r < frozenCount; r++) {
+        frozenRowEls.push(renderRow(r, r * rowHeight))
+    }
+    const frozenBandHeight = frozenCount * rowHeight
 
     const rootStyle: CSSProperties = {
         ["--vox-row-height" as string]: `${rowHeight}px`,
@@ -1159,7 +1296,14 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                         return (
                             <div
                                 key={c}
-                                className="vox-header-cell"
+                                className={
+                                    "vox-header-cell" +
+                                    (c < frozenCols ? " vox-header-cell--frozen-col" : "") +
+                                    (dragCol === c ? " vox-header-cell--dragging" : "") +
+                                    (dropCol === c && dragCol !== null && dragCol !== c
+                                        ? " vox-header-cell--drop"
+                                        : "")
+                                }
                                 role="columnheader"
                                 aria-colindex={c + 1}
                                 aria-sort={
@@ -1174,9 +1318,14 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                                     background: colSelected
                                         ? "var(--vox-color-selection-bg)"
                                         : undefined,
+                                    ...frozenHeaderColStyle(c),
                                 }}
                                 onMouseDown={(e) => handleColHeaderMouseDown(c, e)}
                                 onMouseEnter={() => handleColHeaderMouseEnter(c)}
+                                onDragOver={
+                                    onColumnReorder ? (e) => handleColDragOver(c, e) : undefined
+                                }
+                                onDrop={onColumnReorder ? (e) => handleColDrop(c, e) : undefined}
                             >
                                 {editingHeader === c ? (
                                     <input
@@ -1199,6 +1348,13 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                                 ) : (
                                     <span
                                         className="vox-header-label"
+                                        draggable={!!onColumnReorder}
+                                        onDragStart={
+                                            onColumnReorder
+                                                ? (e) => handleColDragStart(c, e)
+                                                : undefined
+                                        }
+                                        onDragEnd={onColumnReorder ? handleColDragEnd : undefined}
                                         onDoubleClick={
                                             onColumnRename
                                                 ? (e) => {
@@ -1237,6 +1393,39 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                 </div>
             </div>
 
+            {frozenCount > 0 && (
+                <div
+                    className="vox-frozen-band"
+                    style={{ height: frozenBandHeight, paddingRight: scrollbarWidth }}
+                >
+                    <div className="vox-frozen-scroll" ref={frozenRef}>
+                        <div
+                            className="vox-frozen-inner"
+                            style={{ height: frozenBandHeight, width: headerWidth }}
+                        >
+                            {frozenRowEls}
+                            {selRects
+                                .filter((rect) => rect.r1 < frozenCount)
+                                .map((rect, i) => (
+                                    <div
+                                        key={`fsel-${i}`}
+                                        className="vox-selection-outline"
+                                        style={{
+                                            left: colLeft(rect.c1),
+                                            top: rect.r1 * rowHeight,
+                                            width:
+                                                colLeft(rect.c2) +
+                                                getColWidth(rect.c2) -
+                                                colLeft(rect.c1),
+                                            height: (rect.r2 - rect.r1 + 1) * rowHeight,
+                                        }}
+                                    />
+                                ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="vox-body" ref={bodyRef} onScroll={handleScroll}>
                 <div
                     className="vox-scroll-spacer"
@@ -1258,7 +1447,10 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                 </div>
             </div>
 
-            {status === "loading" && total === 0 && (
+            {/* 取得中に表示できる行が無いとき（初回ロード・ソート/フィルタ再取得で行を破棄した直後）は
+                ローディングを出す。total>0 でも rows が空なら「データ無し」に見えるため。
+                スクロールでの追加取得（rows は残っている）ではオーバーレイは出さない。 */}
+            {status === "loading" && rows.size === 0 && (
                 <div className="vox-overlay">
                     {renderLoading ? renderLoading() : labels.loading}
                 </div>
@@ -1329,6 +1521,31 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                     ]}
                 />
             )}
+
+            {sortMenu &&
+                (() => {
+                    const col = columns[sortMenu.col]
+                    if (!col?.sortModes?.length) return null
+                    const active = activeSortMode(sortMenu.col)
+                    const sorted = sort.some((s) => s.column === col.name)
+                    const items: (CtxItem | "sep")[] = col.sortModes.map((m) => ({
+                        label: (m.id === active ? "✓ " : "　") + m.label,
+                        action: () => applySortMode(sortMenu.col, m.id),
+                    }))
+                    if (sorted)
+                        items.push("sep", {
+                            label: labels.sortClear,
+                            action: () => clearSortColumn(sortMenu.col),
+                        })
+                    return (
+                        <ContextMenu
+                            x={sortMenu.x}
+                            y={sortMenu.y}
+                            items={items}
+                            onClose={() => setSortMenu(null)}
+                        />
+                    )
+                })()}
         </div>
     )
 }

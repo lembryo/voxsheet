@@ -31,11 +31,21 @@ export type Column = {
     editable?: boolean | ((ctx: { row: number }) => boolean)
     /** false / 文字列で却下 */
     validate?: (value: CellValue, ctx: { row: number }) => boolean | string
+    /**
+     * 並べ替え方式の選択肢（例: テキスト / 数値）。指定するとヘッダに方式ピッカー（▾）が出る。
+     * 選択中の方式 id は SortSpec.mode に載り、実際の比較はホスト（バックエンド）が解釈する。
+     * 未指定なら従来どおり direction トグルのみ（mode を載せない）。
+     */
+    sortModes?: SortMode[]
+    /** 初期／既定の並べ替え方式 id（未指定なら sortModes[0]）。 */
+    defaultSortMode?: string
 }
 
 export type SortDirection = "asc" | "desc"
-/** 配列順 = 多列ソートの優先順位 */
-export type SortSpec = { column: string; direction: SortDirection }
+/** 並べ替え方式（例: テキスト / 数値）。id の意味づけと比較はホストが行う。 */
+export type SortMode = { id: string; label: string }
+/** 配列順 = 多列ソートの優先順位。mode は Column.sortModes 使用時の選択方式 id。 */
+export type SortSpec = { column: string; direction: SortDirection; mode?: string }
 
 export type FilterOperator =
     | "="
@@ -113,6 +123,8 @@ export type VoxLabels = {
     contextDeleteRows: string
     contextUndo: string
     contextRedo: string
+    sortOptions: string
+    sortClear: string
     confirmLargeCopyTitle: string
     confirmLargeCopyMessage: string
     confirmOk: string
@@ -182,8 +194,10 @@ export type VoxSheetProps = {
     density?: "compact" | "normal" | "comfortable"
     /** 列幅既定(px)。既定 120。 */
     defaultColumnWidth?: number
-    /** 先頭から固定する行数。既定 0。 */
+    /** 先頭から固定する行数。既定 0。縦スクロールしても上部に留まる。 */
     frozenRows?: number
+    /** 先頭から固定する列数。既定 0。横スクロールしても左に留まる。 */
+    frozenColumns?: number
     /** data-vox-theme を設定。既定 "system"。 */
     theme?: "light" | "dark" | "system"
     className?: string
@@ -221,6 +235,8 @@ export type VoxSheetProps = {
     onColumnRename?: (col: number, newName: string) => void
     /** 列追加要求。未指定で追加ボタン非表示。 */
     onAddColumn?: (atCol: number) => void
+    /** 列のドラッグ並べ替え。未指定でヘッダのドラッグ無効（列順はホストが controlled で反映）。 */
+    onColumnReorder?: (from: number, to: number) => void
     /** ローカル編集の都度。 */
     onCellChange?: (edit: CellEdit) => void
     /** 未コミット変更の有無。 */

@@ -12,6 +12,8 @@ export const DEFAULT_LABELS: VoxLabels = {
     contextDeleteRows: "Delete rows",
     contextUndo: "Undo",
     contextRedo: "Redo",
+    sortOptions: "Sort options",
+    sortClear: "Clear sort",
     confirmLargeCopyTitle: "Copy a large selection",
     confirmLargeCopyMessage: "The selection is large and copying may take a while. Continue?",
     confirmOk: "OK",
