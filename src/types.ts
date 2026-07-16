@@ -73,12 +73,14 @@ export type Query = {
 /**
  * チャンク取得の戻り値。
  * data[i][j] = i 行目 j 列目、ids[i] が行 ID、ordinals[i] が表示順序。
+ * ordinals[i] を明示的に null にすると、その行の行番号（左端 gutter）を空欄で描画する
+ * （例: 固定ヘッダ行）。undefined（未指定）は従来どおり offset+i+1 にフォールバックする。
  * total はフィルタ適用後の総件数（毎回返すのが望ましい）。
  */
 export type FetchResult = {
     data: CellValue[][]
     ids: number[]
-    ordinals: number[]
+    ordinals: (number | null)[]
     total?: number
 }
 
@@ -194,6 +196,17 @@ export type VoxSheetProps = {
     density?: "compact" | "normal" | "comfortable"
     /** 列幅既定(px)。既定 120。 */
     defaultColumnWidth?: number
+    /**
+     * 行番号列（左端 gutter）の幅(px)。明示指定するとその値を全箇所
+     * （corner / 各行の行番号セル / 列 X オフセット起点 / 横スクロール総幅 / frozen sticky /
+     * CSS 変数 --vox-row-header-width）に反映する。未指定なら autoRowHeaderWidth に従う。
+     */
+    rowHeaderWidth?: number
+    /**
+     * 行番号列の幅を totalRows の桁数から自動フィットするか。既定 true。
+     * false にすると従来互換の固定幅（52px）に戻す。rowHeaderWidth 指定時は無視する。
+     */
+    autoRowHeaderWidth?: boolean
     /** 先頭から固定する行数。既定 0。縦スクロールしても上部に留まる。 */
     frozenRows?: number
     /** 先頭から固定する列数。既定 0。横スクロールしても左に留まる。 */

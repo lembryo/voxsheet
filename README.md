@@ -118,14 +118,21 @@ type Query = {
 }
 
 type FetchResult = {
-    data: CellValue[][]   // data[i][j] = row i, column j (aligned to `columns`)
-    ids: number[]         // stable row id (used to resolve edits on commit)
-    ordinals: number[]    // display ordinal shown in the row-number gutter
-    total?: number        // count after filters/search; syncs the scrollbar
+    data: CellValue[][]         // data[i][j] = row i, column j (aligned to `columns`)
+    ids: number[]               // stable row id (used to resolve edits on commit)
+    ordinals: (number | null)[] // display ordinal in the row-number gutter; null = blank gutter
+    total?: number              // count after filters/search; syncs the scrollbar
 }
 
 type FetchRowsFn = (query: Query, signal: AbortSignal) => Promise<FetchResult>
 ```
+
+**Row-number gutter.** The left gutter width auto-fits to the largest row number
+(`totalRows`) by default, so `"1,000,000"` and `"100,000,000"` are never clipped;
+set `rowHeaderWidth` to fix it or `autoRowHeaderWidth={false}` for the legacy 52px.
+Return `ordinals[i] === null` to render a **blank** gutter for that row (e.g. a
+frozen header row) while keeping the cell itself; `undefined` falls back to
+`offset + i + 1`.
 
 A `Column` declares the type that drives formatting, alignment, parsing on edit,
 and sort comparison:
@@ -157,10 +164,12 @@ is your backend's plain (text) ordering.
 type SortSpec = { column: string; direction: "asc" | "desc"; mode?: string }
 
 const columns: Column[] = [
-    { name: "code", sortModes: [
-        { id: "text", label: "Text" },
-        { id: "numeric", label: "Numeric" },
-    ], defaultSortMode: "text" },
+    {
+        name: "code", sortModes: [
+            { id: "text", label: "Text" },
+            { id: "numeric", label: "Numeric" },
+        ], defaultSortMode: "text"
+    },
 ]
 // fetchRows receives e.g. { column: "code", direction: "asc", mode: "numeric" };
 // translate mode → ORDER BY on the server.
@@ -168,19 +177,21 @@ const columns: Column[] = [
 
 ## Key props
 
-| prop                            | type                                     | notes                                                  |
-|---------------------------------|------------------------------------------|--------------------------------------------------------|
-| `columns`                       | `Column[]`                               | required                                               |
-| `totalRows`                     | `number`                                 | required; kept in sync via `FetchResult.total`         |
-| `fetchRows`                     | `FetchRowsFn`                            | required                                               |
-| `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`        |
-| `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work) |
-| `frozenRows`                    | `number`                                 | freeze the first N rows to the top (default 0)         |
-| `frozenColumns`                 | `number`                                 | freeze the first N columns to the left (default 0)     |
-| `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                            |
-| `rowHeight`                     | `number`                                 | overrides density height                               |
-| `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                  |
-| `labels` / `icons` / `platform` | partial overrides                        | i18n, icon set, clipboard/notify/confirm/saveFile      |
+| prop                            | type                                     | notes                                                      |
+|---------------------------------|------------------------------------------|------------------------------------------------------------|
+| `columns`                       | `Column[]`                               | required                                                   |
+| `totalRows`                     | `number`                                 | required; kept in sync via `FetchResult.total`             |
+| `fetchRows`                     | `FetchRowsFn`                            | required                                                   |
+| `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`            |
+| `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work)     |
+| `frozenRows`                    | `number`                                 | freeze the first N rows to the top (default 0)             |
+| `frozenColumns`                 | `number`                                 | freeze the first N columns to the left (default 0)         |
+| `rowHeaderWidth`                | `number`                                 | row-number gutter width (px); auto-fit when omitted        |
+| `autoRowHeaderWidth`            | `boolean`                                | auto-fit gutter width to `totalRows` digits (default true) |
+| `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                                |
+| `rowHeight`                     | `number`                                 | overrides density height                                   |
+| `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                      |
+| `labels` / `icons` / `platform` | partial overrides                        | i18n, icon set, clipboard/notify/confirm/saveFile          |
 
 ### Callbacks (host events)
 
@@ -217,8 +228,9 @@ type VoxSheetHandle = {
 }
 ```
 
-Commit flow: edits stay in a local layer (dirty highlight, `onCellChange` /
-`onDirtyChange`). The host commits by reading `getLocalEdits()`, resolving each
+Commit flow: edits stay in a local layer (dirty tracking via `onCellChange` /
+`onDirtyChange`; the dirty tint is off by default — see Styling). The host commits
+by reading `getLocalEdits()`, resolving each
 `row` to a stable id via the `ids` it captured from `fetchRows`, persisting, then
 calling `clearLocalEdits()`.
 
@@ -235,6 +247,10 @@ Self-contained styles under `vox-` classes and `--vox-*` CSS variables; import
 `@lembryo/voxsheet/styles.css`. Override variables (e.g. `--vox-row-height`,
 `--vox-color-accent`) or class rules to theme. Dark mode follows
 `prefers-color-scheme` and can be forced via the `theme` prop.
+
+Edited (dirty) cells are **not** tinted by default (`--vox-color-dirty-bg` defaults to
+`transparent`); set it to highlight uncommitted edits, per theme if desired (e.g. light
+`rgba(212, 167, 44, 0.18)`, dark `rgba(187, 128, 9, 0.25)`).
 
 > **Where to override variables:** the `--vox-*` variables are declared on the
 > `.vox-sheet` root (not `:root`), so overriding them on `:root` has no effect.

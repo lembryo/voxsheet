@@ -35,7 +35,11 @@ const DENSITY: Record<
     comfortable: { rowHeight: 34, fontSize: 15 },
 }
 
-const ROW_HEADER_WIDTH = 52
+/** 行番号列（gutter）の既定/最小/最大幅と、自動フィット時に文字幅へ加える余白(px)。 */
+const DEFAULT_ROW_HEADER_WIDTH = 52
+const MIN_ROW_HEADER_WIDTH = 52
+const MAX_ROW_HEADER_WIDTH = 120
+const ROW_HEADER_PADDING = 18
 const OVERSCAN = 8
 const MIN_COL_WIDTH = 40
 const MAX_AUTOFIT_WIDTH = 600
@@ -45,6 +49,22 @@ const HEAVY_CELL_LIMIT = 100_000
 type Cell = { row: number; col: number }
 
 const cellToInput = (value: CellValue): string => (value === null ? "" : String(value))
+
+// 行番号列の自動フィット用の軽量テキスト計測（共有 canvas を使い回す）。
+// DOM/canvas 非対応環境（SSR 等）では 1 文字あたり fontSize*0.6 で概算する。
+let sharedMeasureCanvas: HTMLCanvasElement | null = null
+const measureNumberLabel = (label: string, fontSize: number): number => {
+    const font = `${fontSize}px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
+    if (typeof document !== "undefined") {
+        if (!sharedMeasureCanvas) sharedMeasureCanvas = document.createElement("canvas")
+        const ctx = sharedMeasureCanvas.getContext("2d")
+        if (ctx) {
+            ctx.font = font
+            return ctx.measureText(label).width
+        }
+    }
+    return label.length * fontSize * 0.6
+}
 
 /**
  * VoxSheet — DOM ベースの仮想スクロール対応スプレッドシート。
@@ -58,6 +78,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         queryKey,
         density = "normal",
         defaultColumnWidth = 120,
+        autoRowHeaderWidth = true,
         frozenRows = 0,
         frozenColumns = 0,
         theme = "system",
@@ -99,6 +120,20 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     const rowHeight = props.rowHeight ?? DENSITY[density].rowHeight
     const fontSize = DENSITY[density].fontSize
 
+    // 行番号列（gutter）幅。明示指定 > 自動フィット（totalRows の桁数）> 固定既定。
+    // corner / 各行の行番号セル / 列 X オフセット起点 / 横スクロール総幅 / frozen sticky /
+    // CSS 変数 --vox-row-header-width のすべてがこの 1 値を参照するため、幅を変えても
+    // ヘッダ行とデータ行のセル位置がずれない。totalRows 変化で自動再計算する。
+    const rowHeaderWidth = useMemo(() => {
+        if (typeof props.rowHeaderWidth === "number") {
+            return Math.max(1, Math.round(props.rowHeaderWidth))
+        }
+        if (!autoRowHeaderWidth) return DEFAULT_ROW_HEADER_WIDTH
+        const label = Math.max(0, Math.floor(totalRows)).toLocaleString()
+        const width = Math.ceil(measureNumberLabel(label, fontSize) + ROW_HEADER_PADDING)
+        return Math.min(MAX_ROW_HEADER_WIDTH, Math.max(MIN_ROW_HEADER_WIDTH, width))
+    }, [props.rowHeaderWidth, autoRowHeaderWidth, totalRows, fontSize])
+
     const rootRef = useRef<HTMLDivElement>(null)
     const bodyRef = useRef<HTMLDivElement>(null)
     const headerRef = useRef<HTMLDivElement>(null)
@@ -134,11 +169,11 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     // 行ヘッダ込みでの列 c の左端 px。選択枠オーバーレイの位置計算に使う。
     const colLeft = useCallback(
         (c: number): number => {
-            let x = ROW_HEADER_WIDTH
+            let x = rowHeaderWidth
             for (let i = 0; i < c; i++) x += getColWidth(i)
             return x
         },
-        [getColWidth],
+        [getColWidth, rowHeaderWidth],
     )
     const applyColWidth = useCallback(
         (col: number, width: number) => {
@@ -1059,7 +1094,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     )
 
     // --- レンダリング ---
-    const headerWidth = ROW_HEADER_WIDTH + columns.reduce((sum, _, i) => sum + getColWidth(i), 0)
+    const headerWidth = rowHeaderWidth + columns.reduce((sum, _, i) => sum + getColWidth(i), 0)
     const totalHeight = Math.max(0, total - bodyOffset) * rowHeight
     const fillRow = selMin ? selMin.r2 : null
     const fillCol = selMin ? selMin.c2 : null
@@ -1071,7 +1106,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
         c < frozenCols ? { position: "sticky", left: colLeft(c), zIndex: 2 } : undefined
     const frozenHeaderColStyle = (c: number): CSSProperties | undefined =>
         c < frozenCols
-            ? { position: "sticky", left: colLeft(c) - ROW_HEADER_WIDTH, zIndex: 3 }
+            ? { position: "sticky", left: colLeft(c) - rowHeaderWidth, zIndex: 3 }
             : undefined
 
     const renderHeaderActions = (c: number): ReactElement | null => {
@@ -1145,7 +1180,10 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                 rect.c1 === 0 &&
                 rect.c2 === columns.length - 1,
         )
-        const ordinal = entry ? Math.floor(entry.ordinal) : rowIdx + 1
+        // ordinal が null（host が明示指定）なら行番号を空欄にする（例: 固定ヘッダ行）。
+        // gutter セル自体は描画を維持し（幅/枠線は保つ）、テキストだけ空にする。
+        const ordinalValue = entry ? entry.ordinal : rowIdx + 1
+        const ordinalText = ordinalValue === null ? "" : Math.floor(ordinalValue).toLocaleString()
         return (
             <div
                 key={rowIdx}
@@ -1155,7 +1193,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
             >
                 <div
                     className={`vox-row-header${rowSelected ? " vox-row-header--selected" : ""}`}
-                    style={{ width: ROW_HEADER_WIDTH, height: rowHeight }}
+                    style={{ width: rowHeaderWidth, height: rowHeight }}
                     onMouseDown={(e) => handleRowHeaderMouseDown(rowIdx, e)}
                     onMouseEnter={() =>
                         isRowDraggingRef.current &&
@@ -1163,7 +1201,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
                         updateActiveSelection(fullRow(rowAnchorRef.current, rowIdx))
                     }
                 >
-                    {ordinal.toLocaleString()}
+                    {ordinalText}
                 </div>
                 {columns.map((col, c) => {
                     const selected = cellInRects(selRects, rowIdx, c)
@@ -1256,7 +1294,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
     const rootStyle: CSSProperties = {
         ["--vox-row-height" as string]: `${rowHeight}px`,
         ["--vox-font-size" as string]: `${fontSize}px`,
-        ["--vox-row-header-width" as string]: `${ROW_HEADER_WIDTH}px`,
+        ["--vox-row-header-width" as string]: `${rowHeaderWidth}px`,
         ...style,
     }
 
@@ -1279,7 +1317,7 @@ const VoxSheetInner = (props: VoxSheetProps, ref: React.Ref<VoxSheetHandle>): Re
             <div className="vox-header-wrap" style={{ paddingRight: scrollbarWidth }}>
                 <div
                     className="vox-corner"
-                    style={{ width: ROW_HEADER_WIDTH }}
+                    style={{ width: rowHeaderWidth }}
                     onClick={handleSelectAll}
                 />
                 <div className="vox-header" ref={headerRef} role="row">

@@ -381,4 +381,84 @@ describe("VoxSheet", () => {
         fireEvent.click(screen.getByRole("button", { name: "Sort A" }))
         expect(onSortChange).toHaveBeenCalledWith([{ column: "A", direction: "asc" }])
     })
+
+    it("applies an explicit rowHeaderWidth to the corner and the row-number gutter", async () => {
+        const { container } = render(
+            <VoxSheet
+                columns={[{ name: "A" }]}
+                totalRows={10}
+                fetchRows={makeFetchRows(10)}
+                rowHeaderWidth={90}
+            />,
+        )
+        const corner = container.querySelector(".vox-corner") as HTMLElement
+        expect(corner.style.width).toBe("90px")
+        await waitFor(() => {
+            const gutter = container.querySelector(".vox-row-header") as HTMLElement | null
+            expect(gutter?.style.width).toBe("90px")
+        })
+    })
+
+    it("auto-fits the row-number gutter wider for larger totals", () => {
+        const cornerWidth = (total: number): number => {
+            const { container, unmount } = render(
+                <VoxSheet
+                    columns={[{ name: "A" }]}
+                    totalRows={total}
+                    fetchRows={makeFetchRows(total)}
+                />,
+            )
+            const w = parseFloat(
+                (container.querySelector(".vox-corner") as HTMLElement).style.width,
+            )
+            unmount()
+            return w
+        }
+        // 1 億行（"100,000,000"）は小さい総数より広く、かつ欠けない幅になる。
+        expect(cornerWidth(100_000_000)).toBeGreaterThan(cornerWidth(5))
+    })
+
+    it("keeps the fixed 52px gutter when autoRowHeaderWidth is false", () => {
+        const { container } = render(
+            <VoxSheet
+                columns={[{ name: "A" }]}
+                totalRows={100_000_000}
+                fetchRows={makeFetchRows(100_000_000)}
+                autoRowHeaderWidth={false}
+            />,
+        )
+        const corner = container.querySelector(".vox-corner") as HTMLElement
+        expect(corner.style.width).toBe("52px")
+    })
+
+    it("renders a blank gutter for rows whose ordinal is explicitly null", async () => {
+        // 先頭行（固定ヘッダ）は ordinal=null で空欄、本体は 1 始まり。
+        const fetchRows: FetchRowsFn = async ({ offset, limit }) => {
+            const count = Math.max(0, Math.min(limit, 3 - offset))
+            return {
+                data: Array.from({ length: count }, (_, i) => [`r${offset + i}`]),
+                ids: Array.from({ length: count }, (_, i) => offset + i + 1),
+                ordinals: Array.from({ length: count }, (_, i) =>
+                    offset + i === 0 ? null : offset + i,
+                ),
+                total: 3,
+            }
+        }
+        const { container } = render(
+            <VoxSheet
+                columns={[{ name: "A" }]}
+                totalRows={3}
+                fetchRows={fetchRows}
+                frozenRows={1}
+            />,
+        )
+        const band = await waitFor(() => {
+            const el = container.querySelector(".vox-frozen-band")
+            if (!el || !el.textContent?.includes("r0")) throw new Error("frozen row not ready")
+            return el as HTMLElement
+        })
+        // 固定ヘッダ行の gutter は空欄（テキストなし・セル自体は描画）。
+        const gutter = band.querySelector(".vox-row-header") as HTMLElement
+        expect(gutter.textContent).toBe("")
+    })
 })
