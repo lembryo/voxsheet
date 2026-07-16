@@ -1,6 +1,6 @@
 {
     "name": "@lembryo/voxsheet",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Virtual-scrolling React spreadsheet / data grid for millions of rows — Excel-like selection, editing, autofill, clipboard, and column resize, with host-controlled (server-driven) sort, filter, and search. TypeScript-first, MIT.",
     "license": "MIT",
     "author": "mao <mao.lembryo@gmail.com>",
