@@ -4,7 +4,8 @@ import type { CellValue, Column, FetchRowsFn, FilterSpec, SortSpec } from "../ty
 const CHUNK = 200
 const FETCH_DEBOUNCE_MS = 80
 
-export type VisibleRow = { values: CellValue[]; id: number; ordinal: number }
+// ordinal が null の行は行番号（gutter）を空欄で描画する（host が明示的に null を渡した場合）。
+export type VisibleRow = { values: CellValue[]; id: number; ordinal: number | null }
 
 export type ChunkStatus = "idle" | "loading" | "error"
 
@@ -122,11 +123,16 @@ export const useChunks = (params: Params) => {
                     { offset, limit, sort, filters, search },
                     controller.signal,
                 )
-                const chunk: VisibleRow[] = result.data.map((values, i) => ({
-                    values,
-                    id: result.ids[i] ?? offset + i + 1,
-                    ordinal: result.ordinals[i] ?? offset + i + 1,
-                }))
+                const chunk: VisibleRow[] = result.data.map((values, i) => {
+                    // ordinals[i] が明示的に null の行は行番号を空欄にする（例: 固定ヘッダ行）。
+                    // undefined（範囲外/未指定）は従来どおり offset+i+1 にフォールバックする。
+                    const ord = result.ordinals[i]
+                    return {
+                        values,
+                        id: result.ids[i] ?? offset + i + 1,
+                        ordinal: ord === undefined ? offset + i + 1 : ord,
+                    }
+                })
                 cacheRef.current.set(offset, chunk)
                 if (typeof result.total === "number") setRespTotal(result.total)
             } catch (error) {

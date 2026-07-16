@@ -9,3 +9,9 @@ class ResizeObserverStub {
 }
 
 globalThis.ResizeObserver = ResizeObserverStub
+
+// jsdom does not implement canvas 2D contexts. VoxSheet measures text (row-number
+// gutter auto-fit, column auto-fit) via a canvas and falls back gracefully when no
+// context is available, so return null instead of emitting a "not implemented" error.
+HTMLCanvasElement.prototype.getContext = (() =>
+    null) as typeof HTMLCanvasElement.prototype.getContext

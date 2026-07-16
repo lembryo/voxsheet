@@ -16,7 +16,10 @@
     --vox-color-selection-bg: rgba(9, 105, 218, 0.1);
     --vox-color-selection-border: #0969da;
     --vox-color-active-border: #0969da;
-    --vox-color-dirty-bg: rgba(212, 167, 44, 0.18);
+    /* 未コミット編集（dirty）セルの背景。既定は transparent（＝既定では色を変えない）。
+       ハイライトしたい場合はこの変数を上書きする（推奨 ライト: rgba(212, 167, 44, 0.18) /
+       ダーク: rgba(187, 128, 9, 0.25)）。ライト/ダークで別色にしたいときはテーマごとに上書きする。 */
+    --vox-color-dirty-bg: transparent;
     --vox-color-search-hit-bg: rgba(255, 212, 0, 0.35);
     --vox-color-search-current-bg: rgba(255, 159, 0, 0.55);
     --vox-color-accent: #0969da;
@@ -63,7 +66,8 @@
         --vox-color-selection-bg: rgba(56, 139, 253, 0.18);
         --vox-color-selection-border: #388bfd;
         --vox-color-active-border: #388bfd;
-        --vox-color-dirty-bg: rgba(187, 128, 9, 0.25);
+        /* dirty は既定で色を変えない（上書きでハイライト。推奨ダーク: rgba(187, 128, 9, 0.25)）。 */
+        --vox-color-dirty-bg: transparent;
         --vox-color-accent: #388bfd;
     }
 }
@@ -80,7 +84,8 @@
     --vox-color-selection-bg: rgba(56, 139, 253, 0.18);
     --vox-color-selection-border: #388bfd;
     --vox-color-active-border: #388bfd;
-    --vox-color-dirty-bg: rgba(187, 128, 9, 0.25);
+    /* dirty は既定で色を変えない（上書きでハイライト。推奨ダーク: rgba(187, 128, 9, 0.25)）。 */
+    --vox-color-dirty-bg: transparent;
     --vox-color-accent: #388bfd;
 }
 
@@ -273,8 +278,15 @@
     user-select: none;
 }
 
+/* 未コミット編集（dirty）セルの背景。既定は transparent（＝既定では色を変えない）。
+   選択/固定列/検索より前に置くことで、既定の透明時はそれらの背景を壊さず（固定列の不透明
+   マスクや選択塗りを保ち）、--vox-color-dirty-bg を上書きしたときは素のセルにだけ薄く乗る。 */
+.vox-cell--dirty {
+    background: var(--vox-color-dirty-bg);
+}
+
 /* 固定列（本体）: sticky-left（位置は JS で付与）。背景でスクロールする列を隠す。
-   選択/dirty/検索の状態クラスはこの後に定義されるため、それらが背景を上書きする。 */
+   選択/検索の状態クラスはこの後に定義されるため、それらが背景を上書きする。 */
 .vox-cell--frozen-col {
     background: var(--vox-color-bg);
 }
@@ -295,10 +307,6 @@
     pointer-events: none;
     box-sizing: border-box;
     border: 2px solid var(--vox-color-selection-border);
-}
-
-.vox-cell--dirty {
-    background: var(--vox-color-dirty-bg);
 }
 
 .vox-cell--search-hit {
