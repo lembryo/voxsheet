@@ -1,44 +1,44 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>ライブデモ — voxsheet React スプレッドシート（10万行を仮想スクロール）| @lembryo/voxsheet</title>
     <meta
         content="@lembryo/voxsheet のライブデモ。10万行をブラウザ内の決定論データソースで仮想スクロール表示し、Excel 風のセル選択・編集・オートフィル・ソート／フィルタ／検索をその場で試せます。ビルド不要・インストール不要。"
-        name="description"/>
+        name="description" />
     <meta
         content="voxsheet demo, React スプレッドシート デモ, 仮想スクロール, data grid demo, virtual scroll, ライブデモ"
-        name="keywords"/>
-    <meta content="index, follow, max-image-preview:large" name="robots"/>
-    <meta content="#06c755" name="theme-color"/>
+        name="keywords" />
+    <meta content="index, follow, max-image-preview:large" name="robots" />
+    <meta content="#06c755" name="theme-color" />
 
-    <link href="https://lembryo.github.io/voxsheet/demo/" rel="canonical"/>
+    <link href="https://lembryo.github.io/voxsheet/demo/" rel="canonical" />
 
-    <meta content="website" property="og:type"/>
-    <meta content="@lembryo/voxsheet" property="og:site_name"/>
-    <meta content="ja_JP" property="og:locale"/>
-    <meta content="ライブデモ — voxsheet React スプレッドシート（10万行を仮想スクロール）" property="og:title"/>
+    <meta content="website" property="og:type" />
+    <meta content="@lembryo/voxsheet" property="og:site_name" />
+    <meta content="ja_JP" property="og:locale" />
+    <meta content="ライブデモ — voxsheet React スプレッドシート（10万行を仮想スクロール）" property="og:title" />
     <meta
         content="10万行をブラウザ内で仮想スクロール表示。Excel 風のセル選択・編集・オートフィル・ソート／フィルタ／検索をその場で試せます。"
-        property="og:description"/>
-    <meta content="https://lembryo.github.io/voxsheet/demo/" property="og:url"/>
-    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" property="og:image"/>
-    <meta content="image/jpeg" property="og:image:type"/>
-    <meta content="1200" property="og:image:width"/>
-    <meta content="630" property="og:image:height"/>
+        property="og:description" />
+    <meta content="https://lembryo.github.io/voxsheet/demo/" property="og:url" />
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" property="og:image" />
+    <meta content="image/jpeg" property="og:image:type" />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
     <meta content="@lembryo/voxsheet — 仮想スクロール対応の React スプレッドシート／データグリッド"
-          property="og:image:alt"/>
-    <meta content="summary_large_image" name="twitter:card"/>
-    <meta content="ライブデモ — voxsheet React スプレッドシート" name="twitter:title"/>
+          property="og:image:alt" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="ライブデモ — voxsheet React スプレッドシート" name="twitter:title" />
     <meta content="10万行をブラウザ内で仮想スクロール表示。Excel 風の編集・オートフィル・ソート／フィルタ／検索を体験。"
-          name="twitter:description"/>
-    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" name="twitter:image"/>
+          name="twitter:description" />
+    <meta content="https://lembryo.github.io/voxsheet/og-image.jpg" name="twitter:image" />
 
-    <link href="../favicon.png" rel="icon" type="image/png"/>
+    <link href="../favicon.png" rel="icon" type="image/png" />
 
     <!-- 公開済みパッケージの CSS（unpkg から直接） -->
-    <link href="https://unpkg.com/@lembryo/voxsheet@1.1.0/dist/voxsheet.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/@lembryo/voxsheet@1.1.0/dist/voxsheet.css" rel="stylesheet" />
 
     <!-- React / voxsheet / htm を ESM で解決（ビルド不要） -->
     <script type="importmap">
@@ -359,12 +359,12 @@
 <div id="root"></div>
 
 <script type="module">
-    import React, {useCallback, useEffect, useMemo, useRef, useState} from "react"
-    import {createRoot} from "react-dom/client"
-    import {VoxSheet} from "@lembryo/voxsheet"
-    import htm from "htm"
+    import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { VoxSheet } from '@lembryo/voxsheet';
+    import htm from 'htm';
 
-    const html = htm.bind(React.createElement)
+    const html = htm.bind(React.createElement);
 
     // =====================================================================
     // ブラウザ内データソース（デモ用）
@@ -372,621 +372,625 @@
     // 同じ index は常に同じ行を返すため、データは再現可能。
     // ※ 本番では同じ Query を実バックエンドの SELECT に渡し、可視範囲だけを取得する。
     // =====================================================================
-    const TOTAL_ROWS = 100000 // ブラウザ内で全走査を軽く保つための行数（実バックエンドなら数百万行でも可）
-    const MAX_LIMIT = 5000
+    const TOTAL_ROWS = 100000; // ブラウザ内で全走査を軽く保つための行数（実バックエンドなら数百万行でも可）
+    const MAX_LIMIT = 5000;
 
     const COLUMNS = [
-        {name: "id", type: "number"},
-        {name: "name", type: "string"},
-        {name: "email", type: "string"},
-        {name: "department", type: "string"},
-        {name: "country", type: "string"},
-        {name: "salary", type: "number"},
-        {name: "age", type: "number"},
-        {name: "score", type: "number"},
-        {name: "active", type: "boolean"},
-        {name: "joinedAt", type: "date"},
-    ]
-    const COLUMN_INDEX = new Map(COLUMNS.map((c, i) => [c.name, i]))
+        { name: 'id', type: 'number' },
+        { name: 'name', type: 'string' },
+        { name: 'email', type: 'string' },
+        { name: 'department', type: 'string' },
+        { name: 'country', type: 'string' },
+        { name: 'salary', type: 'number' },
+        { name: 'age', type: 'number' },
+        { name: 'score', type: 'number' },
+        { name: 'active', type: 'boolean' },
+        { name: 'joinedAt', type: 'date' },
+    ];
+    const COLUMN_INDEX = new Map(COLUMNS.map((c, i) => [c.name, i]));
     const STRING_COLUMN_INDICES = COLUMNS.reduce((acc, c, i) => {
-        if (c.type === "string") acc.push(i)
-        return acc
-    }, [])
+        if (c.type === 'string') acc.push(i);
+        return acc;
+    }, []);
 
-    const FIRST_NAMES = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry", "Ivy", "Jack", "Karen", "Leo", "Mia", "Noah", "Olivia", "Paul"]
-    const LAST_NAMES = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson"]
-    const DEPARTMENTS = ["Engineering", "Sales", "Marketing", "HR", "Finance", "Legal", "Support"]
-    const COUNTRIES = ["USA", "Canada", "UK", "Germany", "France", "Japan", "Australia", "Brazil", "India", "Spain", "Italy", "Netherlands"]
+    const FIRST_NAMES = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack', 'Karen', 'Leo', 'Mia', 'Noah', 'Olivia', 'Paul'];
+    const LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'];
+    const DEPARTMENTS = ['Engineering', 'Sales', 'Marketing', 'HR', 'Finance', 'Legal', 'Support'];
+    const COUNTRIES = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia', 'Brazil', 'India', 'Spain', 'Italy', 'Netherlands'];
 
     const rand = (index, salt) => {
-        let h = Math.imul(index + 1, 2654435761) + Math.imul(salt + 1, 40503)
-        h = Math.imul(h ^ (h >>> 15), 0x85ebca6b)
-        h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35)
-        h ^= h >>> 16
-        return (h >>> 0) / 4294967296
-    }
+        let h = Math.imul(index + 1, 2654435761) + Math.imul(salt + 1, 40503);
+        h = Math.imul(h ^ (h >>> 15), 0x85ebca6b);
+        h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+        h ^= h >>> 16;
+        return (h >>> 0) / 4294967296;
+    };
 
-    const DATE_START_MS = Date.UTC(2015, 0, 1)
-    const DATE_END_MS = Date.UTC(2025, 11, 31)
-    const DATE_SPAN_DAYS = Math.floor((DATE_END_MS - DATE_START_MS) / 86400000)
+    const DATE_START_MS = Date.UTC(2015, 0, 1);
+    const DATE_END_MS = Date.UTC(2025, 11, 31);
+    const DATE_SPAN_DAYS = Math.floor((DATE_END_MS - DATE_START_MS) / 86400000);
 
-    const overlay = new Map()
+    const overlay = new Map();
 
     const generateRow = (index) => {
-        const id = index + 1
-        const first = FIRST_NAMES[index % FIRST_NAMES.length]
-        const last = LAST_NAMES[Math.floor(index / FIRST_NAMES.length) % LAST_NAMES.length]
-        const name = first + " " + last
-        const email = first.toLowerCase() + "." + last.toLowerCase() + id + "@example.com"
-        const department = DEPARTMENTS[Math.floor(rand(index, 1) * DEPARTMENTS.length)]
-        const country = COUNTRIES[Math.floor(rand(index, 2) * COUNTRIES.length)]
-        const salary = 40000 + Math.floor(rand(index, 3) * 120001)
-        const age = 18 + Math.floor(rand(index, 4) * 53)
-        const score = Math.round(rand(index, 5) * 10000) / 100
-        const active = rand(index, 6) < 0.7
-        const dayOffset = Math.floor(rand(index, 7) * (DATE_SPAN_DAYS + 1))
-        const joinedAt = new Date(DATE_START_MS + dayOffset * 86400000).toISOString().slice(0, 10)
-        return [id, name, email, department, country, salary, age, score, active, joinedAt]
-    }
+        const id = index + 1;
+        const first = FIRST_NAMES[index % FIRST_NAMES.length];
+        const last = LAST_NAMES[Math.floor(index / FIRST_NAMES.length) % LAST_NAMES.length];
+        const name = first + ' ' + last;
+        const email = first.toLowerCase() + '.' + last.toLowerCase() + id + '@example.com';
+        const department = DEPARTMENTS[Math.floor(rand(index, 1) * DEPARTMENTS.length)];
+        const country = COUNTRIES[Math.floor(rand(index, 2) * COUNTRIES.length)];
+        const salary = 40000 + Math.floor(rand(index, 3) * 120001);
+        const age = 18 + Math.floor(rand(index, 4) * 53);
+        const score = Math.round(rand(index, 5) * 10000) / 100;
+        const active = rand(index, 6) < 0.7;
+        const dayOffset = Math.floor(rand(index, 7) * (DATE_SPAN_DAYS + 1));
+        const joinedAt = new Date(DATE_START_MS + dayOffset * 86400000).toISOString().slice(0, 10);
+        return [id, name, email, department, country, salary, age, score, active, joinedAt];
+    };
 
     const getRow = (index) => {
-        const row = generateRow(index)
-        const patch = overlay.get(index + 1)
+        const row = generateRow(index);
+        const patch = overlay.get(index + 1);
         if (patch) {
             for (const [colName, value] of patch) {
-                const ci = COLUMN_INDEX.get(colName)
-                if (ci !== undefined) row[ci] = value
+                const ci = COLUMN_INDEX.get(colName);
+                if (ci !== undefined) row[ci] = value;
             }
         }
-        return row
-    }
+        return row;
+    };
 
     const compareCells = (a, b) => {
-        if (a === b) return 0
-        if (a === null) return -1
-        if (b === null) return 1
-        if (typeof a === "number" && typeof b === "number") return a - b
-        if (typeof a === "boolean" && typeof b === "boolean") return (a ? 1 : 0) - (b ? 1 : 0)
-        const as = String(a), bs = String(b)
-        return as < bs ? -1 : as > bs ? 1 : 0
-    }
+        if (a === b) return 0;
+        if (a === null) return -1;
+        if (b === null) return 1;
+        if (typeof a === 'number' && typeof b === 'number') return a - b;
+        if (typeof a === 'boolean' && typeof b === 'boolean') return (a ? 1 : 0) - (b ? 1 : 0);
+        const as = String(a), bs = String(b);
+        return as < bs ? -1 : as > bs ? 1 : 0;
+    };
 
     // 並べ替え方式（VoxSheet の SortSpec.mode）を反映した比較。
     // 'text'=常に文字列 / 'numeric'=常に数値 / 未指定=型に従う既定。方式の解釈はバックエンド責務。
     const compareByMode = (a, b, mode) => {
-        if (mode === "text") {
-            if (a === b) return 0
-            if (a === null) return -1
-            if (b === null) return 1
-            const as = String(a), bs = String(b)
-            return as < bs ? -1 : as > bs ? 1 : 0
+        if (mode === 'text') {
+            if (a === b) return 0;
+            if (a === null) return -1;
+            if (b === null) return 1;
+            const as = String(a), bs = String(b);
+            return as < bs ? -1 : as > bs ? 1 : 0;
         }
-        if (mode === "numeric") {
-            if (a === b) return 0
-            if (a === null) return -1
-            if (b === null) return 1
-            const an = Number(a), bn = Number(b)
-            const aok = !Number.isNaN(an), bok = !Number.isNaN(bn)
-            if (!aok && !bok) return 0
-            if (!aok) return -1
-            if (!bok) return 1
-            return an - bn
+        if (mode === 'numeric') {
+            if (a === b) return 0;
+            if (a === null) return -1;
+            if (b === null) return 1;
+            const an = Number(a), bn = Number(b);
+            const aok = !Number.isNaN(an), bok = !Number.isNaN(bn);
+            if (!aok && !bok) return 0;
+            if (!aok) return -1;
+            if (!bok) return 1;
+            return an - bn;
         }
-        return compareCells(a, b)
-    }
+        return compareCells(a, b);
+    };
 
     const compareForFilter = (cell, value, type) => {
-        if (cell === null || value === null || value === undefined) return NaN
-        if (type === "number") {
-            const a = Number(cell), b = Number(value)
-            if (Number.isNaN(a) || Number.isNaN(b)) return NaN
-            return a - b
+        if (cell === null || value === null || value === undefined) return NaN;
+        if (type === 'number') {
+            const a = Number(cell), b = Number(value);
+            if (Number.isNaN(a) || Number.isNaN(b)) return NaN;
+            return a - b;
         }
-        if (type === "boolean") {
-            const a = cell === true || cell === "true"
-            const b = value === true || value === "true"
-            return (a ? 1 : 0) - (b ? 1 : 0)
+        if (type === 'boolean') {
+            const a = cell === true || cell === 'true';
+            const b = value === true || value === 'true';
+            return (a ? 1 : 0) - (b ? 1 : 0);
         }
-        const as = String(cell), bs = String(value)
-        return as < bs ? -1 : as > bs ? 1 : 0
-    }
+        const as = String(cell), bs = String(value);
+        return as < bs ? -1 : as > bs ? 1 : 0;
+    };
 
     const matchesFilter = (cell, filter, type) => {
         switch (filter.operator) {
-            case "isNull":
-                return cell === null
-            case "notNull":
-                return cell !== null
-            case "contains":
-                return cell !== null && String(cell).toLowerCase().includes(String(filter.value ?? "").toLowerCase())
-            case "startsWith":
-                return cell !== null && String(cell).toLowerCase().startsWith(String(filter.value ?? "").toLowerCase())
-            case "endsWith":
-                return cell !== null && String(cell).toLowerCase().endsWith(String(filter.value ?? "").toLowerCase())
+            case 'isNull':
+                return cell === null;
+            case 'notNull':
+                return cell !== null;
+            case 'contains':
+                return cell !== null && String(cell).toLowerCase().includes(String(filter.value ?? '').toLowerCase());
+            case 'startsWith':
+                return cell !== null && String(cell).toLowerCase().startsWith(String(filter.value ?? '').toLowerCase());
+            case 'endsWith':
+                return cell !== null && String(cell).toLowerCase().endsWith(String(filter.value ?? '').toLowerCase());
         }
-        const cmp = compareForFilter(cell, filter.value ?? null, type)
-        if (Number.isNaN(cmp)) return false
+        const cmp = compareForFilter(cell, filter.value ?? null, type);
+        if (Number.isNaN(cmp)) return false;
         switch (filter.operator) {
-            case "=":
-                return cmp === 0
-            case "!=":
-                return cmp !== 0
-            case ">":
-                return cmp > 0
-            case ">=":
-                return cmp >= 0
-            case "<":
-                return cmp < 0
-            case "<=":
-                return cmp <= 0
+            case '=':
+                return cmp === 0;
+            case '!=':
+                return cmp !== 0;
+            case '>':
+                return cmp > 0;
+            case '>=':
+                return cmp >= 0;
+            case '<':
+                return cmp < 0;
+            case '<=':
+                return cmp <= 0;
         }
-        return false
-    }
+        return false;
+    };
 
     // 並べ替え/フィルタ済みの行インデックス順を (sort+filters+search) シグネチャ単位でキャッシュ。
     // 初回のみ全走査し、以降のページング（スクロール）はキャッシュを即スライスして返す。
-    const ORDER_CACHE_LIMIT = 8
-    const orderCache = new Map()
+    const ORDER_CACHE_LIMIT = 8;
+    const orderCache = new Map();
     const orderedIndices = (filters, sorts, search, pinnedSet, signature) => {
-        const cached = orderCache.get(signature)
+        const cached = orderCache.get(signature);
         if (cached) {
             orderCache.delete(signature);
             orderCache.set(signature, cached);
-            return cached
+            return cached;
         }
-        const matched = []
+        const matched = [];
         for (let i = 0; i < TOTAL_ROWS; i++) {
-            if (pinnedSet.has(i)) continue // 固定行は本体（並べ替え/フィルタ対象）に含めない
-            const row = getRow(i)
-            let keep = true
+            if (pinnedSet.has(i)) continue; // 固定行は本体（並べ替え/フィルタ対象）に含めない
+            const row = getRow(i);
+            let keep = true;
             for (const f of filters) {
                 if (!matchesFilter(row[f.index] ?? null, f.spec, f.type)) {
                     keep = false;
-                    break
+                    break;
                 }
             }
-            if (!keep) continue
+            if (!keep) continue;
             if (search) {
-                let hit = false
+                let hit = false;
                 for (const si of STRING_COLUMN_INDICES) {
-                    const cell = row[si]
+                    const cell = row[si];
                     if (cell !== null && cell !== undefined && String(cell).toLowerCase().includes(search)) {
                         hit = true;
-                        break
+                        break;
                     }
                 }
-                if (!hit) continue
+                if (!hit) continue;
             }
-            matched.push({index: i, row})
+            matched.push({ index: i, row });
         }
         if (sorts.length) {
             matched.sort((a, b) => {
                 for (const s of sorts) {
-                    const c = compareByMode(a.row[s.index] ?? null, b.row[s.index] ?? null, s.mode)
-                    if (c !== 0) return c * s.dir
+                    const c = compareByMode(a.row[s.index] ?? null, b.row[s.index] ?? null, s.mode);
+                    if (c !== 0) return c * s.dir;
                 }
-                return a.index - b.index
-            })
+                return a.index - b.index;
+            });
         }
-        const indices = matched.map((m) => m.index)
-        orderCache.set(signature, indices)
+        const indices = matched.map((m) => m.index);
+        orderCache.set(signature, indices);
         while (orderCache.size > ORDER_CACHE_LIMIT) {
-            const oldest = orderCache.keys().next().value
-            if (oldest === undefined) break
-            orderCache.delete(oldest)
+            const oldest = orderCache.keys().next().value;
+            if (oldest === undefined) break;
+            orderCache.delete(oldest);
         }
-        return indices
-    }
+        return indices;
+    };
 
     const queryRows = (params) => {
-        const offset = Math.max(0, Math.trunc(params.offset) || 0)
-        const limit = Math.min(MAX_LIMIT, Math.max(0, Math.trunc(params.limit) || 0))
+        const offset = Math.max(0, Math.trunc(params.offset) || 0);
+        const limit = Math.min(MAX_LIMIT, Math.max(0, Math.trunc(params.limit) || 0));
         const filters = (params.filters || [])
             .map((spec) => {
-                const index = COLUMN_INDEX.get(spec.column)
-                return index === undefined ? null : {index, type: COLUMNS[index].type, spec}
+                const index = COLUMN_INDEX.get(spec.column);
+                return index === undefined ? null : { index, type: COLUMNS[index].type, spec };
             })
-            .filter(Boolean)
+            .filter(Boolean);
         const sorts = (params.sort || [])
             .map((spec) => {
-                const index = COLUMN_INDEX.get(spec.column)
-                return index === undefined ? null : {index, dir: spec.direction === "desc" ? -1 : 1, mode: spec.mode}
+                const index = COLUMN_INDEX.get(spec.column);
+                return index === undefined ? null : { index, dir: spec.direction === 'desc' ? -1 : 1, mode: spec.mode };
             })
-            .filter(Boolean)
-        const search = params.search && params.search.trim() ? params.search.trim().toLowerCase() : ""
-        const needsFullScan = filters.length > 0 || sorts.length > 0 || search.length > 0
+            .filter(Boolean);
+        const search = params.search && params.search.trim() ? params.search.trim().toLowerCase() : '';
+        const needsFullScan = filters.length > 0 || sorts.length > 0 || search.length > 0;
 
         // 固定ヘッダ行: 並べ替え/フィルタから除外し、常に先頭(位置0..N-1)へ置く。
-        const pinnedIds = []
-        const seenPinned = new Set()
+        const pinnedIds = [];
+        const seenPinned = new Set();
         for (const id of Array.isArray(params.pinnedIds) ? params.pinnedIds : []) {
             if (Number.isInteger(id) && id >= 1 && id <= TOTAL_ROWS && !seenPinned.has(id)) {
                 seenPinned.add(id);
-                pinnedIds.push(id)
+                pinnedIds.push(id);
             }
         }
-        const pinnedIndices = pinnedIds.map((id) => id - 1)
-        const pinnedSet = new Set(pinnedIndices)
-        const nPinned = pinnedIndices.length
+        const pinnedIndices = pinnedIds.map((id) => id - 1);
+        const pinnedSet = new Set(pinnedIndices);
+        const nPinned = pinnedIndices.length;
 
         if (nPinned === 0 && !needsFullScan) {
-            const start = Math.min(offset, TOTAL_ROWS)
-            const end = Math.min(offset + limit, TOTAL_ROWS)
-            const data = [], ids = [], ordinals = []
+            const start = Math.min(offset, TOTAL_ROWS);
+            const end = Math.min(offset + limit, TOTAL_ROWS);
+            const data = [], ids = [], ordinals = [];
             for (let i = start; i < end; i++) {
                 data.push(getRow(i));
                 ids.push(i + 1);
-                ordinals.push(i + 1)
+                ordinals.push(i + 1);
             }
-            return {data, ids, ordinals, total: TOTAL_ROWS}
+            return { data, ids, ordinals, total: TOTAL_ROWS };
         }
 
         // 本体の並び順（並べ替え/フィルタ済み・固定行を除外）を決める。
-        let bodyCount, bodyIndexAt
+        let bodyCount, bodyIndexAt;
         if (needsFullScan) {
             const signature = JSON.stringify({
                 sort: params.sort || [],
                 filters: params.filters || [],
                 search,
-                pinned: pinnedIds
-            })
-            const bodyIndices = orderedIndices(filters, sorts, search, pinnedSet, signature)
-            bodyCount = bodyIndices.length
-            bodyIndexAt = (j) => bodyIndices[j]
+                pinned: pinnedIds,
+            });
+            const bodyIndices = orderedIndices(filters, sorts, search, pinnedSet, signature);
+            bodyCount = bodyIndices.length;
+            bodyIndexAt = (j) => bodyIndices[j];
         } else {
-            bodyCount = TOTAL_ROWS - nPinned
-            const sortedPinned = [...pinnedIndices].sort((a, b) => a - b)
+            bodyCount = TOTAL_ROWS - nPinned;
+            const sortedPinned = [...pinnedIndices].sort((a, b) => a - b);
             bodyIndexAt = (j) => {
-                let idx = j
+                let idx = j;
                 for (const p of sortedPinned) {
-                    if (p <= idx) idx++; else break
+                    if (p <= idx) idx++; else break;
                 }
-                return idx
-            }
+                return idx;
+            };
         }
 
         // 仮想リスト = [固定行] ++ [本体] をスライスして返す。
-        const total = nPinned + bodyCount
-        const pageEnd = Math.min(offset + limit, total)
-        const data = [], ids = [], ordinals = []
+        const total = nPinned + bodyCount;
+        const pageEnd = Math.min(offset + limit, total);
+        const data = [], ids = [], ordinals = [];
         for (let pos = offset; pos < pageEnd; pos++) {
-            let rowIndex, id
+            let rowIndex, id;
             if (pos < nPinned) {
                 rowIndex = pinnedIndices[pos];
-                id = pinnedIds[pos]
+                id = pinnedIds[pos];
             } else {
                 rowIndex = bodyIndexAt(pos - nPinned);
-                id = rowIndex + 1
+                id = rowIndex + 1;
             }
             data.push(getRow(rowIndex));
             ids.push(id);
-            ordinals.push(pos + 1)
+            ordinals.push(pos + 1);
         }
-        return {data, ids, ordinals, total}
-    }
+        return { data, ids, ordinals, total };
+    };
 
     const applyUpdates = (updates) => {
-        let applied = 0
+        let applied = 0;
         for (const u of updates) {
-            if (!u || typeof u.id !== "number") continue
-            if (!Number.isInteger(u.id) || u.id < 1 || u.id > TOTAL_ROWS) continue
-            if (!COLUMN_INDEX.has(u.column)) continue
-            let patch = overlay.get(u.id)
+            if (!u || typeof u.id !== 'number') continue;
+            if (!Number.isInteger(u.id) || u.id < 1 || u.id > TOTAL_ROWS) continue;
+            if (!COLUMN_INDEX.has(u.column)) continue;
+            let patch = overlay.get(u.id);
             if (!patch) {
                 patch = new Map();
-                overlay.set(u.id, patch)
+                overlay.set(u.id, patch);
             }
-            patch.set(u.column, u.value)
-            applied += 1
+            patch.set(u.column, u.value);
+            applied += 1;
         }
-        if (applied > 0) orderCache.clear() // 編集で順序/一致が変わるためキャッシュ破棄
-        return applied
-    }
+        if (applied > 0) orderCache.clear(); // 編集で順序/一致が変わるためキャッシュ破棄
+        return applied;
+    };
 
     // 列メタ → VoxSheet Column[]（型に応じた整形を付与）
     // t は並べ替え方式ピッカーのラベル用（言語連動）。
     const toColumns = (cols, t) =>
         cols.map((c) => {
-            if (c.name === "salary")
+            if (c.name === 'salary')
                 return {
                     name: c.name,
-                    type: "number",
-                    format: {kind: "number", options: {style: "currency", currency: "USD", maximumFractionDigits: 0}},
+                    type: 'number',
+                    format: {
+                        kind: 'number',
+                        options: { style: 'currency', currency: 'USD', maximumFractionDigits: 0 },
+                    },
                     // 並べ替え方式の選択例（▾）。既定はテキスト順（"100000" < "40000"）、
                     // 数値順に切り替えると本来の大小で並ぶ。比較はデータソース側が解釈する。
                     sortModes: [
-                        {id: "text", label: t.sortText},
-                        {id: "numeric", label: t.sortNumeric},
+                        { id: 'text', label: t.sortText },
+                        { id: 'numeric', label: t.sortNumeric },
                     ],
-                    defaultSortMode: "text",
-                }
-            if (c.name === "score")
+                    defaultSortMode: 'text',
+                };
+            if (c.name === 'score')
                 return {
                     name: c.name,
-                    type: "number",
-                    format: {kind: "number", options: {minimumFractionDigits: 2, maximumFractionDigits: 2}}
-                }
-            return {name: c.name, type: c.type}
-        })
+                    type: 'number',
+                    format: { kind: 'number', options: { minimumFractionDigits: 2, maximumFractionDigits: 2 } },
+                };
+            return { name: c.name, type: c.type };
+        });
 
     const OPERATORS_BY_TYPE = {
-        number: ["=", "!=", ">", ">=", "<", "<=", "isNull", "notNull"],
-        date: ["=", "!=", ">", ">=", "<", "<=", "isNull", "notNull"],
-        string: ["contains", "startsWith", "endsWith", "=", "!=", "isNull", "notNull"],
-        boolean: ["=", "isNull", "notNull"],
-    }
-    const NO_VALUE_OPS = new Set(["isNull", "notNull"])
+        number: ['=', '!=', '>', '>=', '<', '<=', 'isNull', 'notNull'],
+        date: ['=', '!=', '>', '>=', '<', '<=', 'isNull', 'notNull'],
+        string: ['contains', 'startsWith', 'endsWith', '=', '!=', 'isNull', 'notNull'],
+        boolean: ['=', 'isNull', 'notNull'],
+    };
+    const NO_VALUE_OPS = new Set(['isNull', 'notNull']);
 
     // =====================================================================
     // 文言（日本語 / 英語）。ドキュメントと同じ localStorage キーで言語を共有。
     // =====================================================================
     const I18N = {
         ja: {
-            title: "voxsheet デモ",
-            filtered: "（絞り込み適用中）",
-            back: "← ドキュメントへ戻る",
-            searchPh: "検索（全テキスト列）",
-            themeAuto: "テーマ: 自動",
-            themeLight: "ライト",
-            themeDark: "ダーク",
-            densHigh: "密度: 高",
-            densNormal: "標準",
-            densComfort: "ゆったり",
-            pinHeader: "ヘッダ行を固定",
-            pinHeaderHint: "1 行目(id=1)を並べ替え/フィルタから除外して先頭に固定",
-            frozenColNone: "固定列: なし",
-            frozenCol1: "先頭 1 列を固定",
-            frozenCol2: "先頭 2 列を固定",
-            frozenColHint: "先頭 N 列を横スクロール時に左へ固定",
-            sortText: "テキスト順",
-            sortNumeric: "数値順",
-            readOnly: "読み取り専用",
-            reset: "条件リセット",
-            save: "保存",
-            bannerStrong: "ブラウザ内の決定論ジェネレータ（実DBではありません）",
-            bannerRest: "。本番では同じ Query を実バックエンドの SELECT に渡し、可視範囲だけを取得します。",
-            bannerLead: "データソース: ",
-            queryTitle: "Query（グリッド → fetchRows）",
-            queryNote: "ヘッダのソート/フィルタ操作・検索が、この Query として渡ります。",
-            selection: "選択範囲",
-            statCount: "件数",
-            statNumeric: "数値セル",
-            statSum: "合計",
-            statAvg: "平均",
-            selectHint: "セルを選択すると集計を表示します。",
-            howto: "使い方",
+            title: 'voxsheet デモ',
+            filtered: '（絞り込み適用中）',
+            back: '← ドキュメントへ戻る',
+            searchPh: '検索（全テキスト列）',
+            themeAuto: 'テーマ: 自動',
+            themeLight: 'ライト',
+            themeDark: 'ダーク',
+            densHigh: '密度: 高',
+            densNormal: '標準',
+            densComfort: 'ゆったり',
+            pinHeader: 'ヘッダ行を固定',
+            pinHeaderHint: '1 行目(id=1)を並べ替え/フィルタから除外して先頭に固定',
+            frozenColNone: '固定列: なし',
+            frozenCol1: '先頭 1 列を固定',
+            frozenCol2: '先頭 2 列を固定',
+            frozenColHint: '先頭 N 列を横スクロール時に左へ固定',
+            sortText: 'テキスト順',
+            sortNumeric: '数値順',
+            readOnly: '読み取り専用',
+            reset: '条件リセット',
+            save: '保存',
+            bannerStrong: 'ブラウザ内の決定論ジェネレータ（実DBではありません）',
+            bannerRest: '。本番では同じ Query を実バックエンドの SELECT に渡し、可視範囲だけを取得します。',
+            bannerLead: 'データソース: ',
+            queryTitle: 'Query（グリッド → fetchRows）',
+            queryNote: 'ヘッダのソート/フィルタ操作・検索が、この Query として渡ります。',
+            selection: '選択範囲',
+            statCount: '件数',
+            statNumeric: '数値セル',
+            statSum: '合計',
+            statAvg: '平均',
+            selectHint: 'セルを選択すると集計を表示します。',
+            howto: '使い方',
             help: [
-                "クリック/ドラッグ、Shift・Ctrl で複数選択",
-                "ダブルクリック / F2 / 直接入力で編集、Enter 確定",
-                "選択右下のハンドルをドラッグでオートフィル",
-                "ヘッダの並べ替え/フィルタボタンで絞り込み",
-                "Ctrl+C / V / Z / Y、列境界ドラッグで幅変更",
+                'クリック/ドラッグ、Shift・Ctrl で複数選択',
+                'ダブルクリック / F2 / 直接入力で編集、Enter 確定',
+                '選択右下のハンドルをドラッグでオートフィル',
+                'ヘッダの並べ替え/フィルタボタンで絞り込み',
+                'Ctrl+C / V / Z / Y、列境界ドラッグで幅変更',
             ],
-            saved: (n) => n + " 件のセルを保存しました（ブラウザ内）",
-            rowsCols: (r, c) => r.toLocaleString() + " 行 × " + c + " 列",
-            filterTitle: (name) => "「" + name + "」を絞り込み",
-            valuePh: "値",
-            clear: "クリア",
-            close: "閉じる",
-            apply: "適用",
+            saved: (n) => n + ' 件のセルを保存しました（ブラウザ内）',
+            rowsCols: (r, c) => r.toLocaleString() + ' 行 × ' + c + ' 列',
+            filterTitle: (name) => '「' + name + '」を絞り込み',
+            valuePh: '値',
+            clear: 'クリア',
+            close: '閉じる',
+            apply: '適用',
         },
         en: {
-            title: "voxsheet demo",
-            filtered: "(filtered)",
-            back: "← Back to docs",
-            searchPh: "Search (all text columns)",
-            themeAuto: "Theme: Auto",
-            themeLight: "Light",
-            themeDark: "Dark",
-            densHigh: "Density: High",
-            densNormal: "Normal",
-            densComfort: "Comfortable",
-            pinHeader: "Pin header row",
-            pinHeaderHint: "Keep row 1 (id=1) at the top, excluded from sort/filter",
-            frozenColNone: "Frozen cols: none",
-            frozenCol1: "Freeze 1 column",
-            frozenCol2: "Freeze 2 columns",
-            frozenColHint: "Freeze the first N columns to the left on horizontal scroll",
-            sortText: "Text order",
-            sortNumeric: "Numeric order",
-            readOnly: "Read-only",
-            reset: "Reset",
-            save: "Save",
-            bannerStrong: "an in-browser deterministic generator (not a real database)",
-            bannerRest: ". In production the same Query is sent to your backend's SELECT, fetching only the visible window.",
-            bannerLead: "Data source: ",
-            queryTitle: "Query (grid → fetchRows)",
-            queryNote: "Header sort/filter actions and search are passed as this Query.",
-            selection: "Selection",
-            statCount: "Count",
-            statNumeric: "Numeric cells",
-            statSum: "Sum",
-            statAvg: "Average",
-            selectHint: "Select cells to see aggregates.",
-            howto: "How to use",
+            title: 'voxsheet demo',
+            filtered: '(filtered)',
+            back: '← Back to docs',
+            searchPh: 'Search (all text columns)',
+            themeAuto: 'Theme: Auto',
+            themeLight: 'Light',
+            themeDark: 'Dark',
+            densHigh: 'Density: High',
+            densNormal: 'Normal',
+            densComfort: 'Comfortable',
+            pinHeader: 'Pin header row',
+            pinHeaderHint: 'Keep row 1 (id=1) at the top, excluded from sort/filter',
+            frozenColNone: 'Frozen cols: none',
+            frozenCol1: 'Freeze 1 column',
+            frozenCol2: 'Freeze 2 columns',
+            frozenColHint: 'Freeze the first N columns to the left on horizontal scroll',
+            sortText: 'Text order',
+            sortNumeric: 'Numeric order',
+            readOnly: 'Read-only',
+            reset: 'Reset',
+            save: 'Save',
+            bannerStrong: 'an in-browser deterministic generator (not a real database)',
+            bannerRest: '. In production the same Query is sent to your backend\'s SELECT, fetching only the visible window.',
+            bannerLead: 'Data source: ',
+            queryTitle: 'Query (grid → fetchRows)',
+            queryNote: 'Header sort/filter actions and search are passed as this Query.',
+            selection: 'Selection',
+            statCount: 'Count',
+            statNumeric: 'Numeric cells',
+            statSum: 'Sum',
+            statAvg: 'Average',
+            selectHint: 'Select cells to see aggregates.',
+            howto: 'How to use',
             help: [
-                "Click/drag; Shift or Ctrl for multi-select",
-                "Double-click / F2 / type to edit, Enter to confirm",
-                "Drag the bottom-right handle to autofill",
-                "Use the header sort/filter buttons to narrow down",
-                "Ctrl+C / V / Z / Y; drag column borders to resize",
+                'Click/drag; Shift or Ctrl for multi-select',
+                'Double-click / F2 / type to edit, Enter to confirm',
+                'Drag the bottom-right handle to autofill',
+                'Use the header sort/filter buttons to narrow down',
+                'Ctrl+C / V / Z / Y; drag column borders to resize',
             ],
-            saved: (n) => n + " cells saved (in-browser)",
-            rowsCols: (r, c) => r.toLocaleString() + " rows × " + c + " cols",
-            filterTitle: (name) => "Filter “" + name + "”",
-            valuePh: "Value",
-            clear: "Clear",
-            close: "Close",
-            apply: "Apply",
+            saved: (n) => n + ' cells saved (in-browser)',
+            rowsCols: (r, c) => r.toLocaleString() + ' rows × ' + c + ' cols',
+            filterTitle: (name) => 'Filter “' + name + '”',
+            valuePh: 'Value',
+            clear: 'Clear',
+            close: 'Close',
+            apply: 'Apply',
         },
-    }
+    };
     const initialLang = (() => {
         try {
-            const s = localStorage.getItem("voxsheet-lang")
-            if (s === "ja" || s === "en") return s
+            const s = localStorage.getItem('voxsheet-lang');
+            if (s === 'ja' || s === 'en') return s;
         } catch (e) {
         }
-        return (navigator.language || "").toLowerCase().indexOf("ja") === 0 ? "ja" : "en"
-    })()
+        return (navigator.language || '').toLowerCase().indexOf('ja') === 0 ? 'ja' : 'en';
+    })();
 
     // =====================================================================
     // フィルタポップオーバー
     // =====================================================================
-    const FilterPopover = ({column, anchor, current, onApply, onClose, t}) => {
-        const ops = OPERATORS_BY_TYPE[column.type] || OPERATORS_BY_TYPE.string
-        const [operator, setOperator] = useState(current?.operator ?? ops[0])
-        const [value, setValue] = useState(current?.value != null ? String(current.value) : "")
-        const needsValue = !NO_VALUE_OPS.has(operator)
+    const FilterPopover = ({ column, anchor, current, onApply, onClose, t }) => {
+        const ops = OPERATORS_BY_TYPE[column.type] || OPERATORS_BY_TYPE.string;
+        const [operator, setOperator] = useState(current?.operator ?? ops[0]);
+        const [value, setValue] = useState(current?.value != null ? String(current.value) : '');
+        const needsValue = !NO_VALUE_OPS.has(operator);
 
         const apply = () => {
-            let v = needsValue ? value : undefined
-            if (needsValue && column.type === "number") v = Number(value)
-            if (needsValue && column.type === "boolean") v = value === "true"
-            onApply({column: column.name, operator, value: v})
-        }
+            let v = needsValue ? value : undefined;
+            if (needsValue && column.type === 'number') v = Number(value);
+            if (needsValue && column.type === 'boolean') v = value === 'true';
+            onApply({ column: column.name, operator, value: v });
+        };
 
-        const style = {left: Math.min(anchor.left, window.innerWidth - 260) + "px", top: anchor.bottom + 4 + "px"}
+        const style = { left: Math.min(anchor.left, window.innerWidth - 260) + 'px', top: anchor.bottom + 4 + 'px' };
         return html`
             <div className="demo-pop" style=${style}>
                 <h4>${t.filterTitle(column.name)}</h4>
                 <select value=${operator} onChange=${(e) => setOperator(e.target.value)}>
-                    ${ops.map((op) => html`<option key=${op} value=${op}>${op}</option>`)}
+                    ${ops.map((op) => html`
+                        <option key=${op} value=${op}>${op}</option>`)}
                 </select>
                 ${needsValue
-            ? column.type === "boolean"
-                ? html`<select value=${value} onChange=${(e) => setValue(e.target.value)}>
-                              <option value="true">true</option>
-                              <option value="false">false</option>
-                          </select>`
-                : html`<input
-                              type=${column.type === "number" ? "number" : "text"}
-                              value=${value}
-                              placeholder=${t.valuePh}
-                              onChange=${(e) => setValue(e.target.value)}
-                          />`
-            : null}
+                    ? column.type === 'boolean'
+                        ? html`<select value=${value} onChange=${(e) => setValue(e.target.value)}>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                        </select>`
+                        : html`<input
+                            type=${column.type === 'number' ? 'number' : 'text'}
+                            value=${value}
+                            placeholder=${t.valuePh}
+                            onChange=${(e) => setValue(e.target.value)}
+                        />`
+                    : null}
                 <div className="demo-pop-actions">
                     <button className="demo-btn" onClick=${() => onApply(null)}>${t.clear}</button>
                     <button className="demo-btn" onClick=${onClose}>${t.close}</button>
                     <button className="demo-btn demo-btn--primary" onClick=${apply}>${t.apply}</button>
                 </div>
-            </div>`
-    }
+            </div>`;
+    };
 
     // =====================================================================
     // アプリ本体
     // =====================================================================
     const App = () => {
-        const sheetRef = useRef(null)
-        const idMapRef = useRef(new Map())
+        const sheetRef = useRef(null);
+        const idMapRef = useRef(new Map());
 
-        const [lang, setLang] = useState(initialLang)
-        const t = I18N[lang]
+        const [lang, setLang] = useState(initialLang);
+        const t = I18N[lang];
         const switchLang = (next) => {
-            setLang(next)
+            setLang(next);
             try {
-                localStorage.setItem("voxsheet-lang", next)
+                localStorage.setItem('voxsheet-lang', next);
             } catch (e) {
             }
-        }
+        };
         useEffect(() => {
-            document.documentElement.lang = lang
-        }, [lang])
+            document.documentElement.lang = lang;
+        }, [lang]);
 
         // 列の並べ替え: 列名の順序を state で保持し、言語連動の列定義に適用する。
-        const [colOrder, setColOrder] = useState(COLUMNS.map((c) => c.name))
+        const [colOrder, setColOrder] = useState(COLUMNS.map((c) => c.name));
         const columns = useMemo(() => {
-            const byName = new Map(toColumns(COLUMNS, t).map((c) => [c.name, c]))
-            return colOrder.map((name) => byName.get(name)).filter(Boolean)
-        }, [t, colOrder])
-        const [sort, setSort] = useState([])
-        const [filters, setFilters] = useState([])
-        const [search, setSearch] = useState("")
-        const [theme, setTheme] = useState("system")
-        const [density, setDensity] = useState("normal")
-        const [frozenColumns, setFrozenColumns] = useState(0)
+            const byName = new Map(toColumns(COLUMNS, t).map((c) => [c.name, c]));
+            return colOrder.map((name) => byName.get(name)).filter(Boolean);
+        }, [t, colOrder]);
+        const [sort, setSort] = useState([]);
+        const [filters, setFilters] = useState([]);
+        const [search, setSearch] = useState('');
+        const [theme, setTheme] = useState('system');
+        const [density, setDensity] = useState('normal');
+        const [frozenColumns, setFrozenColumns] = useState(0);
         // ヘッダ行固定: 1 行目(id=1)を並べ替え/フィルタから除外して先頭に固定表示する。
-        const [pinHeader, setPinHeader] = useState(false)
-        const pinnedIds = useMemo(() => (pinHeader ? [1] : []), [pinHeader])
-        const [readOnly, setReadOnly] = useState(false)
+        const [pinHeader, setPinHeader] = useState(false);
+        const pinnedIds = useMemo(() => (pinHeader ? [1] : []), [pinHeader]);
+        const [readOnly, setReadOnly] = useState(false);
 
-        const [total, setTotal] = useState(TOTAL_ROWS)
-        const [lastQuery, setLastQuery] = useState(null)
-        const [stats, setStats] = useState(null)
-        const [dirty, setDirty] = useState(false)
-        const [message, setMessage] = useState(null)
-        const [pop, setPop] = useState(null)
+        const [total, setTotal] = useState(TOTAL_ROWS);
+        const [lastQuery, setLastQuery] = useState(null);
+        const [stats, setStats] = useState(null);
+        const [dirty, setDirty] = useState(false);
+        const [message, setMessage] = useState(null);
+        const [pop, setPop] = useState(null);
 
         const fetchRows = useCallback((query) => {
-            setLastQuery(query)
+            setLastQuery(query);
             // グリッドの Query に、ホスト独自の pinnedIds（固定ヘッダ行）を相乗りさせる。
-            const res = queryRows({...query, pinnedIds})
-            if (typeof res.total === "number") setTotal(res.total)
-            res.ids.forEach((id, i) => idMapRef.current.set(query.offset + i, id))
+            const res = queryRows({ ...query, pinnedIds });
+            if (typeof res.total === 'number') setTotal(res.total);
+            res.ids.forEach((id, i) => idMapRef.current.set(query.offset + i, id));
             // queryRows は正準の列順で返すため、列 D&D 後は現在の列順へ各行を並べ替える。
-            const canonical = COLUMNS.map((c) => c.name)
-            const order = colOrder.map((name) => canonical.indexOf(name))
+            const canonical = COLUMNS.map((c) => c.name);
+            const order = colOrder.map((name) => canonical.indexOf(name));
             if (!order.every((ci, i) => ci === i)) {
-                res.data = res.data.map((row) => order.map((ci) => row[ci] ?? null))
+                res.data = res.data.map((row) => order.map((ci) => row[ci] ?? null));
             }
-            return Promise.resolve(res)
-        }, [pinnedIds, colOrder])
+            return Promise.resolve(res);
+        }, [pinnedIds, colOrder]);
 
         // 列のドラッグ並べ替え（controlled: 列順の state をホストが更新）
         const handleColumnReorder = useCallback((from, to) => {
             setColOrder((prev) => {
-                const next = [...prev]
-                const [moved] = next.splice(from, 1)
-                if (moved !== undefined) next.splice(to, 0, moved)
-                return next
-            })
-        }, [])
+                const next = [...prev];
+                const [moved] = next.splice(from, 1);
+                if (moved !== undefined) next.splice(to, 0, moved);
+                return next;
+            });
+        }, []);
 
         const handleSave = useCallback(() => {
-            const sheet = sheetRef.current
-            if (!sheet) return
-            const edits = sheet.getLocalEdits()
-            if (edits.length === 0) return
+            const sheet = sheetRef.current;
+            if (!sheet) return;
+            const edits = sheet.getLocalEdits();
+            if (edits.length === 0) return;
             const updates = edits
-                .map((e) => ({id: idMapRef.current.get(e.row), column: columns[e.col]?.name, value: e.newValue}))
-                .filter((u) => u.id != null && !!u.column)
-            const applied = applyUpdates(updates)
-            sheet.clearLocalEdits()
-            sheet.invalidate()
-            setMessage(t.saved(applied))
-        }, [columns, t])
+                .map((e) => ({ id: idMapRef.current.get(e.row), column: columns[e.col]?.name, value: e.newValue }))
+                .filter((u) => u.id != null && !!u.column);
+            const applied = applyUpdates(updates);
+            sheet.clearLocalEdits();
+            sheet.invalidate();
+            setMessage(t.saved(applied));
+        }, [columns, t]);
 
         const applyFilter = useCallback((filter) => {
-            if (!pop) return
-            const colName = columns[pop.col]?.name
+            if (!pop) return;
+            const colName = columns[pop.col]?.name;
             setFilters((prev) => {
-                const without = prev.filter((f) => f.column !== colName)
-                return filter ? [...without, filter] : without
-            })
-            setPop(null)
-        }, [pop, columns])
+                const without = prev.filter((f) => f.column !== colName);
+                return filter ? [...without, filter] : without;
+            });
+            setPop(null);
+        }, [pop, columns]);
 
-        const popColumn = pop ? columns[pop.col] : undefined
+        const popColumn = pop ? columns[pop.col] : undefined;
         const popCurrent = useMemo(
             () => (popColumn ? filters.find((f) => f.column === popColumn.name) : undefined),
             [popColumn, filters],
-        )
+        );
 
         const queryJson = useMemo(
             () => JSON.stringify({
                 sort,
                 filters,
                 search: search || undefined,
-                lastFetch: lastQuery ? {offset: lastQuery.offset, limit: lastQuery.limit} : null,
+                lastFetch: lastQuery ? { offset: lastQuery.offset, limit: lastQuery.limit } : null,
             }, null, 2),
             [sort, filters, search, lastQuery],
-        )
+        );
 
         useEffect(() => {
-            if (!message) return
-            const t = setTimeout(() => setMessage(null), 2400)
-            return () => clearTimeout(t)
-        }, [message])
+            if (!message) return;
+            const t = setTimeout(() => setMessage(null), 2400);
+            return () => clearTimeout(t);
+        }, [message]);
 
         return html`
             <div className="demo-app" data-theme=${theme}>
@@ -995,23 +999,23 @@
                         <h1><span className="logo">V</span>${t.title}</h1>
                         <span className="demo-sub">
                             ${t.rowsCols(total, columns.length)}
-                            ${(sort.length > 0 || filters.length > 0 || search) ? " " + t.filtered : ""}
+                            ${(sort.length > 0 || filters.length > 0 || search) ? ' ' + t.filtered : ''}
                         </span>
-                        <a className="demo-back" href=${"../" + lang + "/"}>${t.back}</a>
+                        <a className="demo-back" href=${'../' + lang + '/'}>${t.back}</a>
                     </div>
                     <div className="demo-toolbar">
                         <div className="lang-switch">
-                            <a href="#" className=${lang === "ja" ? "active" : ""} onClick=${(e) => {
-            e.preventDefault();
-            switchLang("ja")
-        }}>日本語</a>
-                            <a href="#" className=${lang === "en" ? "active" : ""} onClick=${(e) => {
-            e.preventDefault();
-            switchLang("en")
-        }}>EN</a>
+                            <a href="#" className=${lang === 'ja' ? 'active' : ''} onClick=${(e) => {
+                                e.preventDefault();
+                                switchLang('ja');
+                            }}>日本語</a>
+                            <a href="#" className=${lang === 'en' ? 'active' : ''} onClick=${(e) => {
+                                e.preventDefault();
+                                switchLang('en');
+                            }}>EN</a>
                         </div>
                         <input className="demo-search" type="search" placeholder=${t.searchPh}
-                            value=${search} onChange=${(e) => setSearch(e.target.value)} />
+                               value=${search} onChange=${(e) => setSearch(e.target.value)} />
                         <select value=${theme} onChange=${(e) => setTheme(e.target.value)}>
                             <option value="system">${t.themeAuto}</option>
                             <option value="light">${t.themeLight}</option>
@@ -1022,26 +1026,30 @@
                             <option value="normal">${t.densNormal}</option>
                             <option value="comfortable">${t.densComfort}</option>
                         </select>
-                        <select value=${frozenColumns} onChange=${(e) => setFrozenColumns(Number(e.target.value))} title=${t.frozenColHint}>
+                        <select value=${frozenColumns} onChange=${(e) => setFrozenColumns(Number(e.target.value))}
+                                title=${t.frozenColHint}>
                             <option value=${0}>${t.frozenColNone}</option>
                             <option value=${1}>${t.frozenCol1}</option>
                             <option value=${2}>${t.frozenCol2}</option>
                         </select>
                         <label className="demo-check" title=${t.pinHeaderHint}>
-                            <input type="checkbox" checked=${pinHeader} onChange=${(e) => setPinHeader(e.target.checked)} />
+                            <input type="checkbox" checked=${pinHeader}
+                                   onChange=${(e) => setPinHeader(e.target.checked)} />
                             ${t.pinHeader}
                         </label>
                         <label className="demo-check">
-                            <input type="checkbox" checked=${readOnly} onChange=${(e) => setReadOnly(e.target.checked)} />
+                            <input type="checkbox" checked=${readOnly}
+                                   onChange=${(e) => setReadOnly(e.target.checked)} />
                             ${t.readOnly}
                         </label>
                         <button className="demo-btn" onClick=${() => {
-            setSort([]);
-            setFilters([]);
-            setSearch("")
-        }}>${t.reset}</button>
+                            setSort([]);
+                            setFilters([]);
+                            setSearch('');
+                        }}>${t.reset}
+                        </button>
                         <button className="demo-btn demo-btn--primary" disabled=${!dirty} onClick=${handleSave}>
-                            ${t.save}${dirty ? " ●" : ""}
+                            ${t.save}${dirty ? ' ●' : ''}
                         </button>
                     </div>
                 </header>
@@ -1052,28 +1060,29 @@
 
                 <div className="demo-main">
                     <main className="demo-sheet">
-                        ${html`<${VoxSheet}
-                            ref=${sheetRef}
-                            columns=${columns}
-                            totalRows=${total || 1}
-                            fetchRows=${fetchRows}
-                            queryKey=${pinnedIds.join(",")}
-                            theme=${theme}
-                            density=${density}
-                            frozenRows=${pinnedIds.length}
-                            frozenColumns=${frozenColumns}
-                            readOnly=${readOnly}
-                            sort=${sort}
-                            filters=${filters}
-                            search=${search || undefined}
-                            onSortChange=${setSort}
-                            onFilterButtonClick=${(col, anchor) => setPop({col, anchor})}
-                            onColumnReorder=${handleColumnReorder}
-                            onColumnResize=${() => undefined}
-                            onDirtyChange=${setDirty}
-                            onSelectionStats=${setStats}
-                            style=${{height: "100%"}}
-                        />`}
+                        ${html`
+                            <${VoxSheet}
+                                ref=${sheetRef}
+                                columns=${columns}
+                                totalRows=${total || 1}
+                                fetchRows=${fetchRows}
+                                queryKey=${pinnedIds.join(',')}
+                                theme=${theme}
+                                density=${density}
+                                frozenRows=${pinnedIds.length}
+                                frozenColumns=${frozenColumns}
+                                readOnly=${readOnly}
+                                sort=${sort}
+                                filters=${filters}
+                                search=${search || undefined}
+                                onSortChange=${setSort}
+                                onFilterButtonClick=${(col, anchor) => setPop({ col, anchor })}
+                                onColumnReorder=${handleColumnReorder}
+                                onColumnResize=${() => undefined}
+                                onDirtyChange=${setDirty}
+                                onSelectionStats=${setStats}
+                                style=${{ height: '100%' }}
+                            />`}
                     </main>
 
                     <aside className="demo-inspector">
@@ -1082,36 +1091,43 @@
                         <pre className="demo-query">${queryJson}</pre>
                         <h3>${t.selection}</h3>
                         ${stats
-            ? html`<ul className="demo-stats">
-                                  <li>${t.statCount}: ${stats.count.toLocaleString()}</li>
-                                  <li>${t.statNumeric}: ${stats.numericCount.toLocaleString()}</li>
-                                  <li>${t.statSum}: ${stats.sum != null ? stats.sum.toLocaleString() : "—"}</li>
-                                  <li>${t.statAvg}: ${stats.average != null ? stats.average.toLocaleString(undefined, {maximumFractionDigits: 2}) : "—"}</li>
-                              </ul>`
-            : html`<p className="demo-note">${t.selectHint}</p>`}
+                            ? html`
+                                <ul className="demo-stats">
+                                    <li>${t.statCount}: ${stats.count.toLocaleString()}</li>
+                                    <li>${t.statNumeric}: ${stats.numericCount.toLocaleString()}</li>
+                                    <li>${t.statSum}: ${stats.sum != null ? stats.sum.toLocaleString() : '—'}</li>
+                                    <li>${t.statAvg}:
+                                        ${stats.average != null ? stats.average.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '—'}
+                                    </li>
+                                </ul>`
+                            : html`<p className="demo-note">${t.selectHint}</p>`}
                         <h3>${t.howto}</h3>
                         <ul className="demo-help">
-                            ${t.help.map((h, i) => html`<li key=${i}>${h}</li>`)}
+                            ${t.help.map((h, i) => html`
+                                <li key=${i}>${h}</li>`)}
                         </ul>
                     </aside>
                 </div>
 
                 ${pop && popColumn
-            ? html`<${FilterPopover}
-                          column=${popColumn}
-                          anchor=${pop.anchor}
-                          current=${popCurrent}
-                          t=${t}
-                          onApply=${applyFilter}
-                          onClose=${() => setPop(null)}
-                      />`
-            : null}
+                    ? html`
+                        <${FilterPopover}
+                            column=${popColumn}
+                            anchor=${pop.anchor}
+                            current=${popCurrent}
+                            t=${t}
+                            onApply=${applyFilter}
+                            onClose=${() => setPop(null)}
+                        />`
+                    : null}
 
-                ${message ? html`<div className="demo-toast">${message}</div>` : null}
-            </div>`
-    }
+                ${message ? html`
+                    <div className="demo-toast">${message}</div>` : null}
+            </div>`;
+    };
 
-    createRoot(document.getElementById("root")).render(html`<${App} />`)
+    createRoot(document.getElementById('root')).render(html`
+        <${App} />`);
 </script>
 </body>
 </html>

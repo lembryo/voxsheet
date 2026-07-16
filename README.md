@@ -164,10 +164,12 @@ is your backend's plain (text) ordering.
 type SortSpec = { column: string; direction: "asc" | "desc"; mode?: string }
 
 const columns: Column[] = [
-    { name: "code", sortModes: [
-        { id: "text", label: "Text" },
-        { id: "numeric", label: "Numeric" },
-    ], defaultSortMode: "text" },
+    {
+        name: "code", sortModes: [
+            { id: "text", label: "Text" },
+            { id: "numeric", label: "Numeric" },
+        ], defaultSortMode: "text"
+    },
 ]
 // fetchRows receives e.g. { column: "code", direction: "asc", mode: "numeric" };
 // translate mode → ORDER BY on the server.
@@ -175,21 +177,21 @@ const columns: Column[] = [
 
 ## Key props
 
-| prop                            | type                                     | notes                                                  |
-|---------------------------------|------------------------------------------|--------------------------------------------------------|
-| `columns`                       | `Column[]`                               | required                                               |
-| `totalRows`                     | `number`                                 | required; kept in sync via `FetchResult.total`         |
-| `fetchRows`                     | `FetchRowsFn`                            | required                                               |
-| `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`        |
-| `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work) |
-| `frozenRows`                    | `number`                                 | freeze the first N rows to the top (default 0)         |
-| `frozenColumns`                 | `number`                                 | freeze the first N columns to the left (default 0)     |
-| `rowHeaderWidth`                | `number`                                 | row-number gutter width (px); auto-fit when omitted    |
+| prop                            | type                                     | notes                                                      |
+|---------------------------------|------------------------------------------|------------------------------------------------------------|
+| `columns`                       | `Column[]`                               | required                                                   |
+| `totalRows`                     | `number`                                 | required; kept in sync via `FetchResult.total`             |
+| `fetchRows`                     | `FetchRowsFn`                            | required                                                   |
+| `sort` / `filters` / `search`   | controlled                               | reflected in the header / passed to `fetchRows`            |
+| `readOnly`                      | `boolean`                                | disables editing (copy / select / navigate still work)     |
+| `frozenRows`                    | `number`                                 | freeze the first N rows to the top (default 0)             |
+| `frozenColumns`                 | `number`                                 | freeze the first N columns to the left (default 0)         |
+| `rowHeaderWidth`                | `number`                                 | row-number gutter width (px); auto-fit when omitted        |
 | `autoRowHeaderWidth`            | `boolean`                                | auto-fit gutter width to `totalRows` digits (default true) |
-| `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                            |
-| `rowHeight`                     | `number`                                 | overrides density height                               |
-| `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                  |
-| `labels` / `icons` / `platform` | partial overrides                        | i18n, icon set, clipboard/notify/confirm/saveFile      |
+| `density`                       | `"compact" \| "normal" \| "comfortable"` | sets row height + font size                                |
+| `rowHeight`                     | `number`                                 | overrides density height                                   |
+| `theme`                         | `"light" \| "dark" \| "system"`          | sets `data-vox-theme`                                      |
+| `labels` / `icons` / `platform` | partial overrides                        | i18n, icon set, clipboard/notify/confirm/saveFile          |
 
 ### Callbacks (host events)
 
